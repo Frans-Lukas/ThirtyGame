@@ -14,6 +14,9 @@ public class StartScreen extends AppCompatActivity {
         Button mStartGameButton = findViewById(R.id.startGameButton);
         mStartGameButton.setText(R.string.startGame);
 
+        findViewById(R.id.startScreenLayout).setBackground(getResources().getDrawable(R.drawable.startscreenimage));
+
+
         mStartGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
