@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="frlo.umu.cs.se.thirty.ThirtyGame">
+
+
+
+    <GridLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/diceGridBox">
+
+        <ImageButton
+            android:id="@+id/diceImageButton1"
+            android:layout_width="@dimen/maxWidthDice"
+            android:layout_height="@dimen/maxHeightDice"
+            android:scaleType="fitCenter"
+            app:srcCompat="@android:drawable/btn_dialog" />
+
+        <ImageButton
+            android:id="@+id/diceImageButton2"
+            android:layout_width="@dimen/maxWidthDice"
+            android:layout_height="@dimen/maxHeightDice"
+            android:scaleType="fitCenter"
+            app:srcCompat="@android:drawable/btn_dialog" />
+
+        <ImageButton
+            android:id="@+id/diceImageButton3"
+            android:layout_width="@dimen/maxWidthDice"
+            android:layout_height="@dimen/maxHeightDice"
+            android:scaleType="fitCenter"
+            app:srcCompat="@android:drawable/btn_dialog" />
+
+        <ImageButton
+            android:id="@+id/diceImageButton4"
+            android:layout_width="@dimen/maxWidthDice"
+            android:layout_height="@dimen/maxHeightDice"
+            android:layout_column="0"
+            android:layout_row="1"
+            android:scaleType="fitCenter"
+            app:srcCompat="@android:drawable/btn_dialog" />
+
+        <ImageButton
+            android:id="@+id/diceImageButton5"
+            android:layout_width="@dimen/maxWidthDice"
+            android:layout_height="@dimen/maxHeightDice"
+            android:scaleType="fitCenter"
+            app:srcCompat="@android:drawable/btn_dialog" />
+
+        <ImageButton
+            android:id="@+id/diceImageButton6"
+            android:layout_width="@dimen/maxWidthDice"
+            android:layout_height="@dimen/maxHeightDice"
+            android:scaleType="fitCenter"
+            app:srcCompat="@android:drawable/btn_dialog" />
+
+    </GridLayout>
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/diceGridBox"
+        android:layout_above="@id/buttonAndTextLayout">
+
+        <RadioGroup
+            android:id="@+id/combinationRadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/diceGridBox"
+            android:layout_centerHorizontal="true">
+
+            <RadioButton
+                android:id="@+id/lowRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/stringError" />
+
+            <RadioButton
+                android:id="@+id/fourRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/stringError" />
+
+            <RadioButton
+                android:id="@+id/fiveRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/stringError" />
+
+            <RadioButton
+                android:id="@+id/sixRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_row="1"
+                android:layout_weight="1"
+                android:text="@string/stringError" />
+
+            <RadioButton
+                android:id="@+id/sevenRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/stringError" />
+
+            <RadioButton
+                android:id="@+id/eightRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/stringError" />
+
+            <RadioButton
+                android:id="@+id/nineRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/stringError" />
+
+            <RadioButton
+                android:id="@+id/tenRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/stringError" />
+
+            <RadioButton
+                android:id="@+id/elevenRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/stringError" />
+
+            <RadioButton
+                android:id="@+id/twelveRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/stringError" />
+
+        </RadioGroup>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/buttonAndTextLayout">
+
+        <TextView
+            android:id="@+id/scoreTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="15dp"
+            android:text="@string/stringError" />
+
+        <Button
+            android:id="@+id/rollDiceButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="@string/stringError" />
+    </LinearLayout>
+
+
+</RelativeLayout>
