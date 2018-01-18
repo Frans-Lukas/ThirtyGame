@@ -28,11 +28,11 @@ public class ThirtyModel {
     }
 
     public boolean rollDice(){
+        for (int i = 0; i < diceRoll.length; i++) {
+            diceRoll[i] = rand.nextInt(6) + 1;
+        }
         mRerollCount++;
         if(mRerollCount <= MAX_REROLL_COUNT) {
-            for (int i = 0; i < diceRoll.length; i++) {
-                diceRoll[i] = rand.nextInt(6) + 1;
-            }
             return true;
         } else{
             return false;
@@ -100,7 +100,19 @@ public class ThirtyModel {
         return score;
     }
 
+    public int getRollsLeft() {
+        return MAX_REROLL_COUNT - mRerollCount + 1;
+    }
+
+    public int getmRoundCount() {
+        return mRoundCount;
+    }
+
     public int[] getDiceRoll() {
         return diceRoll;
+    }
+
+    public boolean isGameDone(){
+        return mRoundCount >= MAX_ROUND_COUNT;
     }
 }

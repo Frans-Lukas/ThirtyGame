@@ -1,6 +1,7 @@
 package frlo.umu.cs.se.thirty;
 
 import android.graphics.Color;
+import android.graphics.ColorSpace;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,7 +9,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +19,13 @@ import java.util.Random;
 
 public class ThirtyGame extends AppCompatActivity {
     private List<DiceImage> mDiceImages = new ArrayList<>();
-    private int[] mDiceValues = new int[6];
 
     private TextView mRoundCountTextView;
     private TextView mRerollCountTextView;
     private TextView mScoreTextView;
+    private Button mRollDiceBtn;
+    private Button mEndRoundButton;
+    private RadioGroup mScoringSystemRadioGroup;
 
     private ThirtyModel mModel;
 
@@ -32,12 +37,56 @@ public class ThirtyGame extends AppCompatActivity {
 
         mModel = new ThirtyModel();
 
+        setUpTextViews();
+        setUpRadioGroup();
         setUpDiceImageButtons();
         setUpRollDiceButton();
-        setUpRadioGroup();
-        setUpTextViews();
 
+        mScoringSystemRadioGroup = findViewById(R.id.combinationRadioGroup);
+        mScoringSystemRadioGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RadioButton rb = findViewById(((RadioGroup) view).getCheckedRadioButtonId());
+                String scoreMode = rb.getText().toString();
 
+                switch(scoreMode){
+                    case "Low":
+                        mModel.setScoreMode(3);
+                        break;
+                    case "Four":
+                        mModel.setScoreMode(4);
+                        break;
+                    case "Five":
+                        mModel.setScoreMode(5);
+                        break;
+                    case "Six":
+                        mModel.setScoreMode(6);
+                        break;
+                    case "Seven":
+                        mModel.setScoreMode(7);
+                        break;
+                    case "Eight":
+                        mModel.setScoreMode(8);
+                        break;
+                    case "Nine":
+                        mModel.setScoreMode(9);
+                        break;
+                    case "Ten":
+                        mModel.setScoreMode(10);
+                        break;
+                    case "Eleven":
+                        mModel.setScoreMode(11);
+                        break;
+                    case "Twelve":
+                        mModel.setScoreMode(12);
+                        break;
+                    default:
+                        mModel.setScoreMode(3);
+                        break;
+                }
+
+            }
+        });
 
     }
 
@@ -87,13 +136,38 @@ public class ThirtyGame extends AppCompatActivity {
         public void onClick(View view) {
             int index = 0;
             int value;
+            boolean canClickAgain = mModel.rollDice();
+
             for (DiceImage mDiceImage : mDiceImages) {
-                if(mDiceImage.isRollable()) {
-                    value = mRand.nextInt(6);
-                    mDiceValues[index] = value;
+                if (mDiceImage.isRollable()) {
+                    value = mModel.getDiceRoll()[index] - 1;
                     mDiceImage.getmDiceImage().setImageDrawable(mDieFaces[value]);
-                    index++;
                 }
+                index++;
+            }
+            mRerollCountTextView.setText("Rerolls left: " + mModel.getRollsLeft());
+            if(!canClickAgain){
+                view.setEnabled(false);
+            }
+        }
+    }
+
+    class EndRound implements View.OnClickListener{
+
+        @Override
+        public void onClick(View view) {
+            mModel.endRound();
+            mRollDiceBtn.callOnClick();
+            mRollDiceBtn.setEnabled(true);
+            mRerollCountTextView.setText("Rerolls left: " + mModel.getRollsLeft());
+            mRoundCountTextView.setText("Round: " + mModel.getmRoundCount());
+            mScoreTextView.setText("Score: " + mModel.getScore());
+            if(mModel.isGameDone()){
+                mEndRoundButton.setEnabled(false);
+                mRollDiceBtn.setEnabled(false);
+                Toast.makeText(ThirtyGame.this,
+                        "You Got The Score: " + mModel.getScore(),
+                        Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -113,10 +187,14 @@ public class ThirtyGame extends AppCompatActivity {
     }
 
     private void setUpRollDiceButton(){
-        Button rollDiceBtn = findViewById(R.id.rollDiceButton);
-        rollDiceBtn.setText(R.string.rollDice);
-        rollDiceBtn.setOnClickListener(new RollDice());
-        rollDiceBtn.callOnClick();
+        mEndRoundButton = findViewById(R.id.calculateScoreButton);
+        mEndRoundButton.setText("End Round");
+        mEndRoundButton.setOnClickListener(new EndRound());
+
+        mRollDiceBtn = findViewById(R.id.rollDiceButton);
+        mRollDiceBtn.setText(R.string.rollDice);
+        mRollDiceBtn.setOnClickListener(new RollDice());
+        mRollDiceBtn.callOnClick();
     }
 
     private void setUpRadioGroup(){
