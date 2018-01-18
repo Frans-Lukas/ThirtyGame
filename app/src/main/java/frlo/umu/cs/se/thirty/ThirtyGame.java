@@ -18,17 +18,37 @@ public class ThirtyGame extends AppCompatActivity {
     private List<DiceImage> mDiceImages = new ArrayList<>();
     private int[] mDiceValues = new int[6];
 
+    private TextView mRoundCountTextView;
+    private TextView mRerollCountTextView;
+    private TextView mScoreTextView;
+
+    private ThirtyModel mModel;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thirty_game);
+
+        mModel = new ThirtyModel();
 
         setUpDiceImageButtons();
         setUpRollDiceButton();
         setUpRadioGroup();
+        setUpTextViews();
 
-        //findViewById(R.id.mainGameScreenLayout).setBackground(getResources().getDrawable(R.drawable.startscreenimage));
+
+
+    }
+
+    private void setUpTextViews() {
+        mScoreTextView = findViewById(R.id.scoreTextView);
+        mRoundCountTextView = findViewById(R.id.roundNumberTextView);
+        mRerollCountTextView = findViewById(R.id.rerollCountTextView);
+
+        mScoreTextView.setText("Score: 0");
+        mRoundCountTextView.setText("Round: 1");
+        mRerollCountTextView.setText("Rerolls left: 3");
     }
 
     class DiceImageListener implements View.OnClickListener{
@@ -97,9 +117,6 @@ public class ThirtyGame extends AppCompatActivity {
         rollDiceBtn.setText(R.string.rollDice);
         rollDiceBtn.setOnClickListener(new RollDice());
         rollDiceBtn.callOnClick();
-
-        TextView textView = findViewById(R.id.scoreTextView);
-        textView.setText("Score: 0");
     }
 
     private void setUpRadioGroup(){
