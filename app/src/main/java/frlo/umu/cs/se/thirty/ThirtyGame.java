@@ -28,7 +28,7 @@ public class ThirtyGame extends AppCompatActivity {
         setUpRollDiceButton();
         setUpRadioGroup();
 
-        findViewById(R.id.mainGameScreenLayout).setBackground(getResources().getDrawable(R.drawable.startscreenimage));
+        //findViewById(R.id.mainGameScreenLayout).setBackground(getResources().getDrawable(R.drawable.startscreenimage));
     }
 
     class DiceImageListener implements View.OnClickListener{
