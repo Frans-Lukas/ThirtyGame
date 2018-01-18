@@ -42,51 +42,7 @@ public class ThirtyGame extends AppCompatActivity {
         setUpDiceImageButtons();
         setUpRollDiceButton();
 
-        mScoringSystemRadioGroup = findViewById(R.id.combinationRadioGroup);
-        mScoringSystemRadioGroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RadioButton rb = findViewById(((RadioGroup) view).getCheckedRadioButtonId());
-                String scoreMode = rb.getText().toString();
 
-                switch(scoreMode){
-                    case "Low":
-                        mModel.setScoreMode(3);
-                        break;
-                    case "Four":
-                        mModel.setScoreMode(4);
-                        break;
-                    case "Five":
-                        mModel.setScoreMode(5);
-                        break;
-                    case "Six":
-                        mModel.setScoreMode(6);
-                        break;
-                    case "Seven":
-                        mModel.setScoreMode(7);
-                        break;
-                    case "Eight":
-                        mModel.setScoreMode(8);
-                        break;
-                    case "Nine":
-                        mModel.setScoreMode(9);
-                        break;
-                    case "Ten":
-                        mModel.setScoreMode(10);
-                        break;
-                    case "Eleven":
-                        mModel.setScoreMode(11);
-                        break;
-                    case "Twelve":
-                        mModel.setScoreMode(12);
-                        break;
-                    default:
-                        mModel.setScoreMode(3);
-                        break;
-                }
-
-            }
-        });
 
     }
 
@@ -198,6 +154,52 @@ public class ThirtyGame extends AppCompatActivity {
     }
 
     private void setUpRadioGroup(){
+        mScoringSystemRadioGroup = findViewById(R.id.combinationRadioGroup);
+        mScoringSystemRadioGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RadioButton rb = findViewById(((RadioGroup) view).getCheckedRadioButtonId());
+                String scoreMode = rb.getText().toString();
+
+                switch(scoreMode){
+                    case "Low":
+                        mModel.setScoreMode(3);
+                        break;
+                    case "Four":
+                        mModel.setScoreMode(4);
+                        break;
+                    case "Five":
+                        mModel.setScoreMode(5);
+                        break;
+                    case "Six":
+                        mModel.setScoreMode(6);
+                        break;
+                    case "Seven":
+                        mModel.setScoreMode(7);
+                        break;
+                    case "Eight":
+                        mModel.setScoreMode(8);
+                        break;
+                    case "Nine":
+                        mModel.setScoreMode(9);
+                        break;
+                    case "Ten":
+                        mModel.setScoreMode(10);
+                        break;
+                    case "Eleven":
+                        mModel.setScoreMode(11);
+                        break;
+                    case "Twelve":
+                        mModel.setScoreMode(12);
+                        break;
+                    default:
+                        mModel.setScoreMode(3);
+                        break;
+                }
+
+            }
+        });
+
         ((RadioButton)findViewById(R.id.lowRadioButton)).setText("Low");
         ((RadioButton)findViewById(R.id.fourRadioButton)).setText("Four");
         ((RadioButton)findViewById(R.id.fiveRadioButton)).setText("Five");
