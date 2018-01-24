@@ -71,7 +71,7 @@ public class ThirtyModel implements Parcelable{
         return true;
     }
 
-    private void calculateScore(){
+    public void calculateScore(){
         if(scoreMode == 3){
             for (int dice : diceRoll) {
                 if(dice <= 3){
@@ -83,31 +83,148 @@ public class ThirtyModel implements Parcelable{
             for (int dice : diceRoll) {
                 tempDice.add(dice);
             }
-            sum_up_recursive(tempDice, scoreMode,new ArrayList<Integer>());
+
+            for (int i = 0; i < tempDice.size(); i++) {
+                int value = tempDice.get(i);
+                if(value == scoreMode){
+                    score += value;
+                    tempDice.remove(i);
+                    i--;
+                }
+            }
+            if(tempDice.size() >= 2){
+                for (int i = 0; i < tempDice.size(); i++) {
+                    for (int j = i + 1; j < tempDice.size(); j++) {
+                        int value = tempDice.get(i);
+                        value += tempDice.get(j);
+                        if(value == scoreMode){
+                            score += value;
+                            tempDice.remove(i);
+                            tempDice.remove(j - 1);
+                            i--;
+                        }
+                    }
+                }
+            }
+            if(tempDice.size() >= 3){
+                for (int i = 0; i < tempDice.size(); i++) {
+                    for (int j = i + 1; j < tempDice.size(); j++) {
+                        for (int k = j + 1; k < tempDice.size(); k++) {
+                            int value = tempDice.get(i);
+                            value += tempDice.get(j);
+                            value += tempDice.get(k);
+
+                            if(value == scoreMode){
+                                score += value;
+                                tempDice.remove(i);
+                                tempDice.remove(j - 1);
+                                tempDice.remove(k - 2);
+                                i--;
+                            }
+
+                        }
+                    }
+                }
+            }
+            if(tempDice.size() >= 4){
+                for (int i = 0; i < tempDice.size(); i++) {
+                    for (int j = i + 1; j < tempDice.size(); j++) {
+                        for (int k = j + 1; k < tempDice.size(); k++) {
+                            for (int l = k + 1; l < tempDice.size(); l++) {
+
+                                int value = tempDice.get(i);
+                                value += tempDice.get(j);
+                                value += tempDice.get(k);
+                                value += tempDice.get(l);
+
+                                if(value == scoreMode){
+                                    score += value;
+                                    tempDice.remove(i);
+                                    tempDice.remove(j - 1);
+                                    tempDice.remove(k - 2);
+                                    tempDice.remove(l - 3);
+                                    i--;
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+            if(tempDice.size() >= 5){
+                for (int i = 0; i < tempDice.size(); i++) {
+                    for (int j = i + 1; j < tempDice.size(); j++) {
+                        for (int k = j + 1; k < tempDice.size(); k++) {
+                            for (int l = k + 1; l < tempDice.size(); l++) {
+                                for (int m = l + 1; m < tempDice.size(); m++) {
+                                    int value = tempDice.get(i);
+                                    value += tempDice.get(j);
+                                    value += tempDice.get(k);
+                                    value += tempDice.get(l);
+                                    value += tempDice.get(m);
+
+                                    if(value == scoreMode){
+                                        score += value;
+                                        tempDice.remove(i);
+                                        tempDice.remove(j - 1);
+                                        tempDice.remove(k - 2);
+                                        tempDice.remove(l - 3);
+                                        tempDice.remove(m - 4);
+                                        i--;
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            if(tempDice.size() >= 6){
+                for (int i = 0; i < tempDice.size(); i++) {
+                    for (int j = i + 1; j < tempDice.size(); j++) {
+                        for (int k = j + 1; k < tempDice.size(); k++) {
+                            for (int l = k + 1; l < tempDice.size(); l++) {
+                                for (int m = l + 1; m < tempDice.size(); m++) {
+                                    for (int n = m + 1; n < tempDice.size(); n++) {
+                                        int value = tempDice.get(i);
+                                        value += tempDice.get(j);
+                                        value += tempDice.get(k);
+                                        value += tempDice.get(l);
+                                        value += tempDice.get(m);
+                                        value += tempDice.get(n);
+
+                                        if(value == scoreMode){
+                                            score += value;
+                                            tempDice.remove(i);
+                                            tempDice.remove(j - 1);
+                                            tempDice.remove(k - 2);
+                                            tempDice.remove(l - 3);
+                                            tempDice.remove(m - 4);
+                                            tempDice.remove(n - 5);
+                                            i--;
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
         }
     }
 
     /**
      * https://stackoverflow.com/questions/4632322/finding-all-possible-combinations-of-numbers-to-reach-a-given-sum
      * @param numbers
-     * @param target
-     * @param partial
      */
-    private void sum_up_recursive(ArrayList<Integer> numbers, int target, ArrayList<Integer> partial) {
-        int s = 0;
-        for (int x: partial) s += x;
-        if (s == target)
-            score += s;
-        if (s >= target)
-            return;
-        for(int i = 0; i < numbers.size(); i++) {
-            ArrayList<Integer> remaining = new ArrayList<Integer>();
-            int n = numbers.get(i);
-            for (int j=i+1; j<numbers.size();j++) remaining.add(numbers.get(j));
-            ArrayList<Integer> partial_rec = new ArrayList<Integer>(partial);
-            partial_rec.add(n);
-            sum_up_recursive(remaining,target,partial_rec);
-        }
+    private void sum_up_recursive(ArrayList<Integer> numbers) {
+
+    }
+
+    public void setDiceRoll(int[] diceRoll) {
+        this.diceRoll = diceRoll;
     }
 
     public void setScoreMode(int scoreMode) throws InvalidParameterException{
