@@ -14,6 +14,7 @@ import java.util.Random;
 public class ThirtyModel implements Parcelable{
     private int diceRoll[] = new int[6];
     private boolean lockedDice[] = new boolean[6];
+    private boolean canRollAgain = true;
     private int mRoundCount;
     private int mRerollCount;
     private int score;
@@ -40,6 +41,7 @@ public class ThirtyModel implements Parcelable{
     public ThirtyModel(Parcel in) {
         in.readIntArray(diceRoll);
         in.readBooleanArray(lockedDice);
+        canRollAgain = in.readInt() != 0;
         mRoundCount = in.readInt();
         mRerollCount = in.readInt();
         score = in.readInt();
@@ -47,15 +49,15 @@ public class ThirtyModel implements Parcelable{
     }
 
 
-    public boolean rollDice(){
+    public void rollDice(){
         for (int i = 0; i < diceRoll.length; i++) {
             diceRoll[i] = rand.nextInt(6) + 1;
         }
         mRerollCount++;
         if(mRerollCount <= MAX_REROLL_COUNT) {
-            return true;
+            canRollAgain =  true;
         } else{
-            return false;
+            canRollAgain = false;
         }
     }
 
@@ -128,6 +130,10 @@ public class ThirtyModel implements Parcelable{
         return score;
     }
 
+    public boolean isCanRollAgain() {
+        return canRollAgain;
+    }
+
     public int getRollsLeft() {
         return MAX_REROLL_COUNT - mRerollCount + 1;
     }
@@ -175,6 +181,7 @@ public class ThirtyModel implements Parcelable{
     public void writeToParcel(Parcel dest, int i) {
         dest.writeIntArray(diceRoll);
         dest.writeBooleanArray(lockedDice);
+        dest.writeInt(canRollAgain ? 1 : 0);
         dest.writeInt(mRoundCount);
         dest.writeInt(mRerollCount);
         dest.writeInt(score);

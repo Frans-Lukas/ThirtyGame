@@ -21,10 +21,11 @@ import java.util.List;
 import java.util.Random;
 
 public class ThirtyGame extends AppCompatActivity {
-    public static final int DISABLED_COLOR = Color.DKGRAY;
-    public static final int ENABLED_COLOR = Color.WHITE;
-    private List<DiceImage> mDiceImages = new ArrayList<>();
+    private static final int DISABLED_COLOR = Color.DKGRAY;
+    private static final int ENABLED_COLOR = Color.WHITE;
+    private static final String M_MODEL_KEY = "mModel";
 
+    private List<DiceImage> mDiceImages = new ArrayList<>();
     private TextView mRoundCountTextView;
     private TextView mRerollCountTextView;
     private TextView mScoreTextView;
@@ -32,8 +33,6 @@ public class ThirtyGame extends AppCompatActivity {
     private Button mEndRoundButton;
     private RadioGroup mScoringSystemRadioGroup;
     private ThirtyModel mModel;
-    private String mGameState;
-    private String M_MODEL_KEY = "mModel";
     private Drawable[] mDieFaces = new Drawable[6];
 
     @Override
@@ -94,7 +93,8 @@ public class ThirtyGame extends AppCompatActivity {
         public void onClick(View view) {
             int index = 0;
             int value;
-            boolean canClickAgain = mModel.rollDice();
+            mModel.rollDice();
+            boolean canClickAgain = mModel.isCanRollAgain();
 
             for (DiceImage mDiceImage : mDiceImages) {
                 if (mDiceImage.isRollable()) {
@@ -136,7 +136,7 @@ public class ThirtyGame extends AppCompatActivity {
             mScoreTextView.setText("Score: " + mModel.getScore());
             if(mModel.isGameDone()){
                 Toast.makeText(ThirtyGame.this,
-                        "You Got The Score: " + mModel.getScore(),
+                        "Your score is: " + mModel.getScore(),
                         Toast.LENGTH_LONG).show();
                 Intent intent = new Intent();
                 intent.putExtra("model", mModel);
@@ -185,6 +185,9 @@ public class ThirtyGame extends AppCompatActivity {
         mRollDiceBtn = findViewById(R.id.rollDiceButton);
         mRollDiceBtn.setText(R.string.rollDice);
         mRollDiceBtn.setOnClickListener(new RollDice());
+        if(!mModel.isCanRollAgain()){
+            mRollDiceBtn.setEnabled(false);
+        }
     }
 
     private void setUpRadioGroup(){
