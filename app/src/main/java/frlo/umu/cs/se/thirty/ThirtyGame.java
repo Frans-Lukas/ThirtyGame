@@ -1,5 +1,7 @@
 package frlo.umu.cs.se.thirty;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.ColorSpace;
 import android.graphics.drawable.Drawable;
@@ -133,11 +135,13 @@ public class ThirtyGame extends AppCompatActivity {
             mRoundCountTextView.setText("Rounds left: " + (10 - mModel.getmRoundCount()));
             mScoreTextView.setText("Score: " + mModel.getScore());
             if(mModel.isGameDone()){
-                mEndRoundButton.setEnabled(false);
-                mRollDiceBtn.setEnabled(false);
                 Toast.makeText(ThirtyGame.this,
                         "You Got The Score: " + mModel.getScore(),
                         Toast.LENGTH_LONG).show();
+                Intent intent = new Intent();
+                intent.putExtra("model", mModel);
+                setResult(Activity.RESULT_OK, intent);
+                finish();
             }
 
         }
