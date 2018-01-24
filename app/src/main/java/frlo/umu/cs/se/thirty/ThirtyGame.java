@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Random;
 
 public class ThirtyGame extends AppCompatActivity {
+    public static final int DISABLED_COLOR = Color.DKGRAY;
+    public static final int ENABLED_COLOR = Color.WHITE;
     private List<DiceImage> mDiceImages = new ArrayList<>();
 
     private TextView mRoundCountTextView;
@@ -29,19 +31,22 @@ public class ThirtyGame extends AppCompatActivity {
     private RadioGroup mScoringSystemRadioGroup;
     private ThirtyModel mModel;
     private String mGameState;
+    private String M_MODEL_KEY = "mModel";
+    private Drawable[] mDieFaces = new Drawable[6];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if(savedInstanceState != null){
-            //mModel = savedInstanceState.get("");
+            mModel = savedInstanceState.getParcelable(M_MODEL_KEY);
+        } else{
+            mModel = new ThirtyModel();
         }
 
         setContentView(R.layout.activity_thirty_game);
 
-        mModel = new ThirtyModel();
-
+        setUpDiceImages();
         setUpTextViews();
         setUpRadioGroup();
         setUpDiceImageButtons();
@@ -61,35 +66,27 @@ public class ThirtyGame extends AppCompatActivity {
 
     class DiceImageListener implements View.OnClickListener{
         private DiceImage linkedDiceImage;
+        private int indexInModel = 0;
 
-        public DiceImageListener(DiceImage linkedDiceImage) {
+        public DiceImageListener(DiceImage linkedDiceImage, int indexInModel) {
             this.linkedDiceImage = linkedDiceImage;
+            this.indexInModel = indexInModel;
         }
 
         @Override
         public void onClick(View view) {
             if(linkedDiceImage.isRollable()){
-                linkedDiceImage.getmDiceImage().setBackgroundColor(Color.DKGRAY);
+                linkedDiceImage.getmDiceImage().setBackgroundColor(DISABLED_COLOR);
+                mModel.lockDice(indexInModel);
             } else{
-                linkedDiceImage.getmDiceImage().setBackgroundColor(Color.WHITE);
+                linkedDiceImage.getmDiceImage().setBackgroundColor(ENABLED_COLOR);
+                mModel.unlockDice(indexInModel);
             }
             linkedDiceImage.setRollable(!linkedDiceImage.isRollable());
         }
     }
 
     class RollDice implements View.OnClickListener{
-        private Random mRand;
-        private Drawable[] mDieFaces = new Drawable[6];
-
-        public RollDice() {
-            mDieFaces[0] = getResources().getDrawable(R.drawable.die_face_1_t);
-            mDieFaces[1] = getResources().getDrawable(R.drawable.die_face_2_t);
-            mDieFaces[2] = getResources().getDrawable(R.drawable.die_face_3_t);
-            mDieFaces[3] = getResources().getDrawable(R.drawable.die_face_4_t);
-            mDieFaces[4] = getResources().getDrawable(R.drawable.die_face_5_t);
-            mDieFaces[5] = getResources().getDrawable(R.drawable.die_face_6_t);
-            mRand = new Random();
-        }
 
         @Override
         public void onClick(View view) {
@@ -110,6 +107,19 @@ public class ThirtyGame extends AppCompatActivity {
             }
         }
     }
+
+    private void setUpDiceImages(){
+        mDieFaces[0] = getResources().getDrawable(R.drawable.die_face_1_t);
+        mDieFaces[1] = getResources().getDrawable(R.drawable.die_face_2_t);
+        mDieFaces[2] = getResources().getDrawable(R.drawable.die_face_3_t);
+        mDieFaces[3] = getResources().getDrawable(R.drawable.die_face_4_t);
+        mDieFaces[4] = getResources().getDrawable(R.drawable.die_face_5_t);
+        mDieFaces[5] = getResources().getDrawable(R.drawable.die_face_6_t);
+    }
+
+
+
+
 
     class EndRound implements View.OnClickListener{
 
@@ -136,7 +146,7 @@ public class ThirtyGame extends AppCompatActivity {
     private void resetDiceImages() {
         for (DiceImage mDiceImage : mDiceImages) {
             if(!mDiceImage.isRollable()){
-                mDiceImage.getmDiceImage().setBackgroundColor(Color.WHITE);
+                mDiceImage.getmDiceImage().setBackgroundColor(ENABLED_COLOR);
                 mDiceImage.setRollable(!mDiceImage.isRollable());
             }
         }
@@ -150,10 +160,16 @@ public class ThirtyGame extends AppCompatActivity {
         mDiceImages.add(new DiceImage((ImageButton) findViewById(R.id.diceImageButton4)));
         mDiceImages.add(new DiceImage((ImageButton) findViewById(R.id.diceImageButton5)));
         mDiceImages.add(new DiceImage((ImageButton) findViewById(R.id.diceImageButton6)));
-
+        int index = 0;
         for (DiceImage mDiceImage : mDiceImages) {
-            mDiceImage.getmDiceImage().setBackgroundColor(Color.WHITE);
-            mDiceImage.getmDiceImage().setOnClickListener(new DiceImageListener(mDiceImage));
+            mDiceImage.getmDiceImage().setBackgroundColor(ENABLED_COLOR);
+            mDiceImage.getmDiceImage().setOnClickListener(new DiceImageListener(mDiceImage, index));
+            mDiceImage.getmDiceImage().setImageDrawable(mDieFaces[mModel.getDiceRoll()[index] - 1]);
+            if(mModel.isDiceLocked(index)){
+                mDiceImage.setRollable(false);
+                mDiceImage.getmDiceImage().setBackgroundColor(DISABLED_COLOR);
+            }
+            index++;
         }
     }
 
@@ -165,7 +181,6 @@ public class ThirtyGame extends AppCompatActivity {
         mRollDiceBtn = findViewById(R.id.rollDiceButton);
         mRollDiceBtn.setText(R.string.rollDice);
         mRollDiceBtn.setOnClickListener(new RollDice());
-        mRollDiceBtn.callOnClick();
     }
 
     private void setUpRadioGroup(){
@@ -231,7 +246,8 @@ public class ThirtyGame extends AppCompatActivity {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(M_MODEL_KEY, mModel);
     }
 }

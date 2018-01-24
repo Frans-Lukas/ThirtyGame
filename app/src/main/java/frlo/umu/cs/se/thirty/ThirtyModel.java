@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -14,6 +13,7 @@ import java.util.Random;
 
 public class ThirtyModel implements Parcelable{
     private int diceRoll[] = new int[6];
+    private boolean lockedDice[] = new boolean[6];
     private int mRoundCount;
     private int mRerollCount;
     private int score;
@@ -27,15 +27,19 @@ public class ThirtyModel implements Parcelable{
         mRoundCount = 0;
         mRerollCount = 0;
         rand = new Random();
+        for (boolean dice : lockedDice) {
+            dice = false;
+        }
         rollDice();
     }
 
     /**
-     * 
+     *
      * @param in
      */
     public ThirtyModel(Parcel in) {
         in.readIntArray(diceRoll);
+        in.readBooleanArray(lockedDice);
         mRoundCount = in.readInt();
         mRerollCount = in.readInt();
         score = in.readInt();
@@ -112,6 +116,14 @@ public class ThirtyModel implements Parcelable{
         }
     }
 
+    public void lockDice(int index){
+        lockedDice[index] = true;
+        }
+
+    public void unlockDice(int index){
+        lockedDice[index] = false;
+    }
+
     public int getScore() {
         return score;
     }
@@ -126,6 +138,10 @@ public class ThirtyModel implements Parcelable{
 
     public int[] getDiceRoll() {
         return diceRoll;
+    }
+
+    public boolean isDiceLocked(int index){
+        return lockedDice[index];
     }
 
     public boolean isGameDone(){
@@ -158,6 +174,7 @@ public class ThirtyModel implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int i) {
         dest.writeIntArray(diceRoll);
+        dest.writeBooleanArray(lockedDice);
         dest.writeInt(mRoundCount);
         dest.writeInt(mRerollCount);
         dest.writeInt(score);
