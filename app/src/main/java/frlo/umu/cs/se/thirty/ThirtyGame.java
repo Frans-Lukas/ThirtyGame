@@ -3,6 +3,7 @@ package frlo.umu.cs.se.thirty;
 import android.graphics.Color;
 import android.graphics.ColorSpace;
 import android.graphics.drawable.Drawable;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -26,13 +27,17 @@ public class ThirtyGame extends AppCompatActivity {
     private Button mRollDiceBtn;
     private Button mEndRoundButton;
     private RadioGroup mScoringSystemRadioGroup;
-
     private ThirtyModel mModel;
-
+    private String mGameState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(savedInstanceState != null){
+            //mModel = savedInstanceState.get("");
+        }
+
         setContentView(R.layout.activity_thirty_game);
 
         mModel = new ThirtyModel();
@@ -42,8 +47,6 @@ public class ThirtyGame extends AppCompatActivity {
         setUpDiceImageButtons();
         setUpRollDiceButton();
 
-
-
     }
 
     private void setUpTextViews() {
@@ -51,9 +54,9 @@ public class ThirtyGame extends AppCompatActivity {
         mRoundCountTextView = findViewById(R.id.roundNumberTextView);
         mRerollCountTextView = findViewById(R.id.rerollCountTextView);
 
-        mScoreTextView.setText("Score: 0");
-        mRoundCountTextView.setText("Round: 1");
-        mRerollCountTextView.setText("Rerolls left: 3");
+        mScoreTextView.setText("Score: " + mModel.getScore());
+        mRoundCountTextView.setText("Rounds left: " + (10 - mModel.getmRoundCount()));
+        mRerollCountTextView.setText("Rerolls left: " + (mModel.getRollsLeft()));
     }
 
     class DiceImageListener implements View.OnClickListener{
@@ -75,8 +78,8 @@ public class ThirtyGame extends AppCompatActivity {
     }
 
     class RollDice implements View.OnClickListener{
-        private Drawable[] mDieFaces = new Drawable[6];
         private Random mRand;
+        private Drawable[] mDieFaces = new Drawable[6];
 
         public RollDice() {
             mDieFaces[0] = getResources().getDrawable(R.drawable.die_face_1_t);
@@ -112,11 +115,12 @@ public class ThirtyGame extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
+            resetDiceImages();
             mModel.endRound();
             mRollDiceBtn.callOnClick();
             mRollDiceBtn.setEnabled(true);
             mRerollCountTextView.setText("Rerolls left: " + mModel.getRollsLeft());
-            mRoundCountTextView.setText("Round: " + mModel.getmRoundCount());
+            mRoundCountTextView.setText("Rounds left: " + (10 - mModel.getmRoundCount()));
             mScoreTextView.setText("Score: " + mModel.getScore());
             if(mModel.isGameDone()){
                 mEndRoundButton.setEnabled(false);
@@ -125,7 +129,18 @@ public class ThirtyGame extends AppCompatActivity {
                         "You Got The Score: " + mModel.getScore(),
                         Toast.LENGTH_LONG).show();
             }
+
         }
+    }
+
+    private void resetDiceImages() {
+        for (DiceImage mDiceImage : mDiceImages) {
+            if(!mDiceImage.isRollable()){
+                mDiceImage.getmDiceImage().setBackgroundColor(Color.WHITE);
+                mDiceImage.setRollable(!mDiceImage.isRollable());
+            }
+        }
+
     }
 
     private void setUpDiceImageButtons(){
@@ -213,5 +228,10 @@ public class ThirtyGame extends AppCompatActivity {
 
         RadioButton lowButton = findViewById(R.id.lowRadioButton);
         lowButton.setChecked(true);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
     }
 }

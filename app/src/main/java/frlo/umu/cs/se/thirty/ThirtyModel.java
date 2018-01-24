@@ -1,5 +1,8 @@
 package frlo.umu.cs.se.thirty;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,7 +12,7 @@ import java.util.Random;
  * Created by Frans-Lukas on 2018-01-18.
  */
 
-public class ThirtyModel {
+public class ThirtyModel implements Parcelable{
     private int diceRoll[] = new int[6];
     private int mRoundCount;
     private int mRerollCount;
@@ -26,6 +29,19 @@ public class ThirtyModel {
         rand = new Random();
         rollDice();
     }
+
+    /**
+     * 
+     * @param in
+     */
+    public ThirtyModel(Parcel in) {
+        in.readIntArray(diceRoll);
+        mRoundCount = in.readInt();
+        mRerollCount = in.readInt();
+        score = in.readInt();
+        scoreMode = in.readInt();
+    }
+
 
     public boolean rollDice(){
         for (int i = 0; i < diceRoll.length; i++) {
@@ -114,5 +130,37 @@ public class ThirtyModel {
 
     public boolean isGameDone(){
         return mRoundCount >= MAX_ROUND_COUNT;
+    }
+
+    public static final Parcelable.Creator<ThirtyModel> CREATOR
+            = new Parcelable.Creator<ThirtyModel>() {
+        public ThirtyModel createFromParcel(Parcel in) {
+            return new ThirtyModel(in);
+        }
+
+        public ThirtyModel[] newArray(int size) {
+            return new ThirtyModel[size];
+        }
+    };
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    /**
+     *
+     * @param dest
+     * @param i
+     */
+
+    @Override
+    public void writeToParcel(Parcel dest, int i) {
+        dest.writeIntArray(diceRoll);
+        dest.writeInt(mRoundCount);
+        dest.writeInt(mRerollCount);
+        dest.writeInt(score);
+        dest.writeInt(scoreMode);
     }
 }
