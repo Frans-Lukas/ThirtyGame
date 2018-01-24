@@ -102,6 +102,7 @@ public class ThirtyModel implements Parcelable{
                             tempDice.remove(i);
                             tempDice.remove(j - 1);
                             i--;
+                            break;
                         }
                     }
                 }
@@ -120,6 +121,7 @@ public class ThirtyModel implements Parcelable{
                                 tempDice.remove(j - 1);
                                 tempDice.remove(k - 2);
                                 i--;
+                                break;
                             }
 
                         }
@@ -144,6 +146,7 @@ public class ThirtyModel implements Parcelable{
                                     tempDice.remove(k - 2);
                                     tempDice.remove(l - 3);
                                     i--;
+                                    break;
                                 }
                             }
 
@@ -171,6 +174,7 @@ public class ThirtyModel implements Parcelable{
                                         tempDice.remove(l - 3);
                                         tempDice.remove(m - 4);
                                         i--;
+                                        break;
                                     }
                                 }
                             }
@@ -203,6 +207,7 @@ public class ThirtyModel implements Parcelable{
                                             tempDice.remove(m - 4);
                                             tempDice.remove(n - 5);
                                             i--;
+                                            break;
                                         }
                                     }
                                 }
