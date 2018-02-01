@@ -65,6 +65,9 @@ public class ThirtyGame extends AppCompatActivity {
         mRerollCountTextView.setText("Rerolls left: " + (mModel.getRollsLeft()));
     }
 
+    /**
+     * If a image is clicked, toggle if it is rollable.
+     */
     class DiceImageListener implements View.OnClickListener{
         private DiceImage linkedDiceImage;
         private int indexInModel = 0;
@@ -87,6 +90,9 @@ public class ThirtyGame extends AppCompatActivity {
         }
     }
 
+    /**
+     * Roll all the enabled dice and update the dice images accordingly.
+     */
     class RollDice implements View.OnClickListener{
 
         @Override
@@ -96,6 +102,7 @@ public class ThirtyGame extends AppCompatActivity {
             mModel.rollDice();
             boolean canClickAgain = mModel.isCanRollAgain();
 
+            //Update images.
             for (DiceImage mDiceImage : mDiceImages) {
                 if (mDiceImage.isRollable()) {
                     value = mModel.getDiceRoll()[index] - 1;
@@ -103,6 +110,8 @@ public class ThirtyGame extends AppCompatActivity {
                 }
                 index++;
             }
+
+            //Update reroll count
             mRerollCountTextView.setText("Rerolls left: " + mModel.getRollsLeft());
             if(!canClickAgain){
                 view.setEnabled(false);
@@ -119,10 +128,9 @@ public class ThirtyGame extends AppCompatActivity {
         mDieFaces[5] = getResources().getDrawable(R.drawable.die_face_6_t);
     }
 
-
-
-
-
+    /***
+     * End round and if it is the final round go to score screen.
+     */
     class EndRound implements View.OnClickListener{
 
         @Override
@@ -190,6 +198,9 @@ public class ThirtyGame extends AppCompatActivity {
         }
     }
 
+    /**
+     * Sets up the radio group that decides the model scoreMode.
+     */
     private void setUpRadioGroup(){
         mScoringSystemRadioGroup = findViewById(R.id.combinationRadioGroup);
         mScoringSystemRadioGroup.setOnClickListener(new View.OnClickListener() {
@@ -252,6 +263,11 @@ public class ThirtyGame extends AppCompatActivity {
         lowButton.setChecked(true);
     }
 
+
+    /**
+     * On reset, remember parcable with all the model data.
+     * @param outState
+     */
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

@@ -35,7 +35,7 @@ public class ThirtyModel implements Parcelable{
     }
 
     /**
-     *
+     * If the model is destroyed it can be reset in this constructor.
      * @param in
      */
     public ThirtyModel(Parcel in) {
@@ -49,6 +49,9 @@ public class ThirtyModel implements Parcelable{
     }
 
 
+    /**
+     * Rolls all the dice and sees if this is the final roll.
+     */
     public void rollDice(){
         for (int i = 0; i < diceRoll.length; i++) {
             diceRoll[i] = rand.nextInt(6) + 1;
@@ -61,6 +64,10 @@ public class ThirtyModel implements Parcelable{
         }
     }
 
+    /**
+     * Ends the current round and increases the roundcounter by 1.
+     * @return if this is not the last round.
+     */
     public boolean endRound(){
         if(mRoundCount == MAX_ROUND_COUNT){
             return false;
@@ -71,6 +78,9 @@ public class ThirtyModel implements Parcelable{
         return true;
     }
 
+    /**
+     * Calculates the score depending on what score mode is selected.
+     */
     public void calculateScore(){
         if(scoreMode == 3){
             for (int dice : diceRoll) {

@@ -15,6 +15,10 @@ public class StartScreen extends AppCompatActivity {
     private final String SCORE_KEY = "score";
     private TextView scoreTextView;
 
+    /**
+     * Create the button that goes to the game activity.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,9 +34,6 @@ public class StartScreen extends AppCompatActivity {
             }
         }
 
-        //findViewById(R.id.startScreenLayout).setBackground(getResources().getDrawable(R.drawable.startscreenimage));
-
-
         mStartGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -42,6 +43,12 @@ public class StartScreen extends AppCompatActivity {
         });
     }
 
+    /**
+     * Get result from game and display the score.
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQUEST_CODE_GAME){
@@ -53,6 +60,10 @@ public class StartScreen extends AppCompatActivity {
         }
     }
 
+    /**
+     * If score is rotated, remember the score for recreation.
+     * @param outState
+     */
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
