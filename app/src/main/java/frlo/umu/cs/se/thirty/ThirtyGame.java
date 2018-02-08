@@ -74,9 +74,9 @@ public class ThirtyGame extends AppCompatActivity {
         mRoundCountTextView = findViewById(R.id.roundNumberTextView);
         mRerollCountTextView = findViewById(R.id.rerollCountTextView);
 
-        mScoreTextView.setText(R.string.score + mModel.getScore());
-        mRoundCountTextView.setText(R.string.roundsLeft + (TOTAL_NUMBER_OF_ROUNDS - mModel.getmRoundCount()));
-        mRerollCountTextView.setText(R.string.rerollsLeft + (mModel.getRollsLeft()));
+        mScoreTextView.setText(getString(R.string.score) + mModel.getScore());
+        mRoundCountTextView.setText(getString(R.string.roundsLeft) + (TOTAL_NUMBER_OF_ROUNDS - mModel.getmRoundCount()));
+        mRerollCountTextView.setText(getString(R.string.rerollsLeft) + (mModel.getRollsLeft()));
     }
 
     /**
@@ -127,7 +127,7 @@ public class ThirtyGame extends AppCompatActivity {
             }
 
             //Update reroll count
-            mRerollCountTextView.setText(R.string.rerollsLeft + mModel.getRollsLeft());
+            mRerollCountTextView.setText(getString(R.string.rerollsLeft) + mModel.getRollsLeft());
             if(!canClickAgain){
                 view.setEnabled(false);
             }
@@ -155,12 +155,12 @@ public class ThirtyGame extends AppCompatActivity {
             mRollDiceBtn.callOnClick();
             mRollDiceBtn.setEnabled(true);
 
-
+            //change score, reroll and round left text.
             mRerollCountTextView.setText(getString(R.string.rerollsLeft) + mModel.getRollsLeft());
-            mRoundCountTextView.setText(getString(R.string.roundsLeft) + (TOTAL_NUMBER_OF_ROUNDS - mModel.getmRoundCount()));
-            mScoreTextView.setText(getString(R.string.score) + mModel.getScore());
+            mRoundCountTextView.setText(getString(R.string.roundsLeft )+ (TOTAL_NUMBER_OF_ROUNDS - mModel.getmRoundCount()));
+            mScoreTextView.setText(getString(R.string.score )+ mModel.getScore());
 
-            //Game is done, return to start screen with score.
+            //check if Game is done, if so: return to start screen with score.
             if(mModel.isGameDone()){
                 Toast.makeText(ThirtyGame.this,
                         getString(R.string.yourScore) + mModel.getScore(),
@@ -171,8 +171,15 @@ public class ThirtyGame extends AppCompatActivity {
                 finish();
             }
 
-            ((RadioButton)scoreChoices.get(mModel.getAvailableScoreMode())).setSelected(true);
-
+            //disable current scorechoice button.
+            if(mModel.getAvailableScoreMode() != -1) {
+                 scoreChoices.get(mModel.getAvailableScoreMode()).performClick();
+            }
+            for (int i = 0; i < scoreChoices.size(); i++) {
+                if(mModel.isDisabledScoreChoice(i)){
+                    scoreChoices.get(i).setEnabled(false);
+                }
+            }
         }
     }
 
@@ -211,11 +218,11 @@ public class ThirtyGame extends AppCompatActivity {
 
     private void setUpRollDiceButton(){
         Button mEndRoundButton = findViewById(R.id.calculateScoreButton);
-        mEndRoundButton.setText(R.string.endRound);
+        mEndRoundButton.setText(getString(R.string.endRound));
         mEndRoundButton.setOnClickListener(new EndRound());
 
         mRollDiceBtn = findViewById(R.id.rollDiceButton);
-        mRollDiceBtn.setText(R.string.rollDice);
+        mRollDiceBtn.setText(getString(R.string.rollDice));
         mRollDiceBtn.setOnClickListener(new RollDice());
 
         //If we can roll again, enable the dice button.
@@ -229,8 +236,8 @@ public class ThirtyGame extends AppCompatActivity {
         setUpScoreChoices();
 
         //Start with low button checked.
-        RadioButton lowButton = findViewById(R.id.lowRadioButton);
-        lowButton.setChecked(true);
+        RadioButton lowButton = scoreChoices.get(mModel.getAvailableScoreMode());
+        lowButton.performClick();
     }
 
     /**
@@ -264,24 +271,31 @@ public class ThirtyGame extends AppCompatActivity {
         scoreChoices.add(findViewById(R.id.twelveRadioButton));
 
         //Set text
-        scoreChoices.get(0).setText(R.string.low);
-        scoreChoices.get(1).setText(R.string.four);
-        scoreChoices.get(2).setText(R.string.five);
-        scoreChoices.get(3).setText(R.string.six);
-        scoreChoices.get(4).setText(R.string.seven);
-        scoreChoices.get(5).setText(R.string.eight);
-        scoreChoices.get(6).setText(R.string.nine);
-        scoreChoices.get(7).setText(R.string.ten);
-        scoreChoices.get(8).setText(R.string.eleven);
-        scoreChoices.get(9).setText(R.string.twelve);
+        scoreChoices.get(0).setText(getString(R.string.low));
+        scoreChoices.get(1).setText(getString(R.string.four));
+        scoreChoices.get(2).setText(getString(R.string.five));
+        scoreChoices.get(3).setText(getString(R.string.six));
+        scoreChoices.get(4).setText(getString(R.string.seven));
+        scoreChoices.get(5).setText(getString(R.string.eight));
+        scoreChoices.get(6).setText(getString(R.string.nine));
+        scoreChoices.get(7).setText(getString(R.string.ten));
+        scoreChoices.get(8).setText(getString(R.string.eleven));
+        scoreChoices.get(9).setText(getString(R.string.twelve));
 
         for (RadioButton scoreChoice : scoreChoices) {
             scoreChoice.setOnClickListener(new radioButtonListener());
+        }
+
+        for (int i = 0; i < scoreChoices.size(); i++) {
+            if(mModel.isDisabledScoreChoice(i)){
+                scoreChoices.get(i).setEnabled(false);
+            }
         }
     }
 
 
     private void setScoreMode(String scoreMode){
+        System.out.println("Changing score mode: " + scoreMode + "Value: " + SCORE_MODE_FOUR);
         switch(scoreMode){
             case "Low":
                 mModel.setScoreMode(SCORE_MODE_LOW);

@@ -40,6 +40,7 @@ public class ThirtyModel implements Parcelable{
      */
     public ThirtyModel(Parcel in) {
         in.readIntArray(diceRoll);
+        in.readBooleanArray(usedScoreModeChoice);
         in.readBooleanArray(lockedDice);
         canRollAgain = in.readInt() != 0;
         mRoundCount = in.readInt();
@@ -79,6 +80,9 @@ public class ThirtyModel implements Parcelable{
 
         //make sure user cant use same score mode again.
         usedScoreModeChoice[scoreMode - 3] = true;
+
+        System.out.println("Disabling score mode: " + (scoreMode - 3));
+
 
         mRerollCount = 0;
         mRoundCount++;
@@ -152,6 +156,7 @@ public class ThirtyModel implements Parcelable{
     public void setScoreMode(int scoreMode) throws InvalidParameterException{
         //Make sure illegal score modes can not be set.
         if(scoreMode < 13 && scoreMode > 2 && !usedScoreModeChoice[scoreMode - 3]){
+            System.out.println("Scoremode is changed to: " + scoreMode);
             this.scoreMode = scoreMode;
         } else{
             throw new InvalidParameterException("scoreMode must be between 3 and 13 and not have " +
@@ -190,6 +195,10 @@ public class ThirtyModel implements Parcelable{
             }
         }
         return -1;
+    }
+
+    public boolean isDisabledScoreChoice(int index){
+        return usedScoreModeChoice[index];
     }
 
     public boolean isCanRollAgain() {
@@ -244,6 +253,7 @@ public class ThirtyModel implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int i) {
         dest.writeIntArray(diceRoll);
+        dest.writeBooleanArray(usedScoreModeChoice);
         dest.writeBooleanArray(lockedDice);
         dest.writeInt(canRollAgain ? 1 : 0);
         dest.writeInt(mRoundCount);
