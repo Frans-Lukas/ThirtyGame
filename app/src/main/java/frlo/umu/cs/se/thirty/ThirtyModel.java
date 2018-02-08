@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 /**
@@ -82,160 +83,54 @@ public class ThirtyModel implements Parcelable{
      * Calculates the score depending on what score mode is selected.
      */
     public void calculateScore(){
+        //If scoremode is three, select all dice that is three or lower.
         if(scoreMode == 3){
             for (int dice : diceRoll) {
                 if(dice <= 3){
                     score += dice;
                 }
             }
-        } else{
+        } else {
             ArrayList<Integer> tempDice = new ArrayList<>();
             for (int dice : diceRoll) {
-                tempDice.add(dice);
-            }
-
-            for (int i = 0; i < tempDice.size(); i++) {
-                int value = tempDice.get(i);
-                if(value == scoreMode){
-                    score += value;
-                    tempDice.remove(i);
-                    i--;
+                if(dice <= scoreMode) {
+                    tempDice.add(dice);
                 }
             }
-            if(tempDice.size() >= 2){
-                for (int i = 0; i < tempDice.size(); i++) {
-                    for (int j = i + 1; j < tempDice.size(); j++) {
-                        int value = tempDice.get(i);
-                        value += tempDice.get(j);
-                        if(value == scoreMode){
-                            score += value;
-                            tempDice.remove(i);
-                            tempDice.remove(j - 1);
-                            i--;
-                            break;
-                        }
-                    }
-                }
-            }
-            if(tempDice.size() >= 3){
-                for (int i = 0; i < tempDice.size(); i++) {
-                    for (int j = i + 1; j < tempDice.size(); j++) {
-                        for (int k = j + 1; k < tempDice.size(); k++) {
-                            int value = tempDice.get(i);
-                            value += tempDice.get(j);
-                            value += tempDice.get(k);
-
-                            if(value == scoreMode){
-                                score += value;
-                                tempDice.remove(i);
-                                tempDice.remove(j - 1);
-                                tempDice.remove(k - 2);
-                                i--;
-                                break;
-                            }
-
-                        }
-                    }
-                }
-            }
-            if(tempDice.size() >= 4){
-                for (int i = 0; i < tempDice.size(); i++) {
-                    for (int j = i + 1; j < tempDice.size(); j++) {
-                        for (int k = j + 1; k < tempDice.size(); k++) {
-                            for (int l = k + 1; l < tempDice.size(); l++) {
-
-                                int value = tempDice.get(i);
-                                value += tempDice.get(j);
-                                value += tempDice.get(k);
-                                value += tempDice.get(l);
-
-                                if(value == scoreMode){
-                                    score += value;
-                                    tempDice.remove(i);
-                                    tempDice.remove(j - 1);
-                                    tempDice.remove(k - 2);
-                                    tempDice.remove(l - 3);
-                                    i--;
-                                    break;
-                                }
-                            }
-
-                        }
-                    }
-                }
-            }
-            if(tempDice.size() >= 5){
-                for (int i = 0; i < tempDice.size(); i++) {
-                    for (int j = i + 1; j < tempDice.size(); j++) {
-                        for (int k = j + 1; k < tempDice.size(); k++) {
-                            for (int l = k + 1; l < tempDice.size(); l++) {
-                                for (int m = l + 1; m < tempDice.size(); m++) {
-                                    int value = tempDice.get(i);
-                                    value += tempDice.get(j);
-                                    value += tempDice.get(k);
-                                    value += tempDice.get(l);
-                                    value += tempDice.get(m);
-
-                                    if(value == scoreMode){
-                                        score += value;
-                                        tempDice.remove(i);
-                                        tempDice.remove(j - 1);
-                                        tempDice.remove(k - 2);
-                                        tempDice.remove(l - 3);
-                                        tempDice.remove(m - 4);
-                                        i--;
-                                        break;
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-                }
-            }
-
-            if(tempDice.size() >= 6){
-                for (int i = 0; i < tempDice.size(); i++) {
-                    for (int j = i + 1; j < tempDice.size(); j++) {
-                        for (int k = j + 1; k < tempDice.size(); k++) {
-                            for (int l = k + 1; l < tempDice.size(); l++) {
-                                for (int m = l + 1; m < tempDice.size(); m++) {
-                                    for (int n = m + 1; n < tempDice.size(); n++) {
-                                        int value = tempDice.get(i);
-                                        value += tempDice.get(j);
-                                        value += tempDice.get(k);
-                                        value += tempDice.get(l);
-                                        value += tempDice.get(m);
-                                        value += tempDice.get(n);
-
-                                        if(value == scoreMode){
-                                            score += value;
-                                            tempDice.remove(i);
-                                            tempDice.remove(j - 1);
-                                            tempDice.remove(k - 2);
-                                            tempDice.remove(l - 3);
-                                            tempDice.remove(m - 4);
-                                            tempDice.remove(n - 5);
-                                            i--;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-                }
-            }
+            Collections.sort(tempDice, (dice1, dice2) -> dice2 - dice1);
+            smartSumSelect(tempDice, 0, scoreMode);
         }
+
     }
 
     /**
-     * https://stackoverflow.com/questions/4632322/finding-all-possible-combinations-of-numbers-to-reach-a-given-sum
-     * @param numbers
+     * This method chooses the most amount of numbers to make up the target value by
+     * first selecting the value closest to the target value. After selecting the
+     * value closest to the target, find the new value that makes the sum closer to the target.
+     * If the sum is equal to the target, go back and make the sum zero.
+     *
+     * @param numbers A list of numbers sorted from biggest to smallest where no value should
+     *                be bigger than the target.
+     * @param sum the current sum of targets added.
+     * @param target the target for the sum to reach.
      */
-    private void sum_up_recursive(ArrayList<Integer> numbers) {
+    private void smartSumSelect(ArrayList<Integer> numbers, int sum, int target) {
 
+        if(sum == target){
+            score += sum;
+            return;
+        }
+
+        for (int i = 0; i < numbers.size(); i++) {
+
+            if(sum + numbers.get(i) <= target){
+                sum += numbers.get(i);
+                numbers.remove(i);
+                smartSumSelect(numbers, sum, target);
+                i = -1;
+                sum = 0;
+            }
+        }
     }
 
     public void setDiceRoll(int[] diceRoll) {
@@ -243,6 +138,7 @@ public class ThirtyModel implements Parcelable{
     }
 
     public void setScoreMode(int scoreMode) throws InvalidParameterException{
+        //Make sure illegal score modes can not be set.
         if(scoreMode < 13 && scoreMode > 2){
             this.scoreMode = scoreMode;
         } else{
@@ -250,10 +146,18 @@ public class ThirtyModel implements Parcelable{
         }
     }
 
+    /**
+     * Lock the selected dice.
+     * @param index the index of the dice to lock.
+     */
     public void lockDice(int index){
         lockedDice[index] = true;
         }
 
+    /**
+     * Unlock the selected dice for rolling
+     * @param index the index of the dice to unlock.
+     */
     public void unlockDice(int index){
         lockedDice[index] = false;
     }
@@ -286,6 +190,9 @@ public class ThirtyModel implements Parcelable{
         return mRoundCount >= MAX_ROUND_COUNT;
     }
 
+    /**
+     * Make sure program is parcable, i.e. save all the data.
+     */
     public static final Parcelable.Creator<ThirtyModel> CREATOR
             = new Parcelable.Creator<ThirtyModel>() {
         public ThirtyModel createFromParcel(Parcel in) {
@@ -304,11 +211,10 @@ public class ThirtyModel implements Parcelable{
     }
 
     /**
-     *
+     * Save data to parcel.
      * @param dest
      * @param i
      */
-
     @Override
     public void writeToParcel(Parcel dest, int i) {
         dest.writeIntArray(diceRoll);

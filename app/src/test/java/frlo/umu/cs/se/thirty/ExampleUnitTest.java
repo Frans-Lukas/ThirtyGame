@@ -83,4 +83,26 @@ public class ExampleUnitTest {
         model.calculateScore();
         assertEquals(24, model.getScore());
     }
+
+    @Test
+    public void shouldBeDivisibleByFive() throws Exception {
+        int dices[] = {
+                1,5,1,3,1,5
+        };
+        model.setScoreMode(5);
+        model.setDiceRoll(dices);
+        model.calculateScore();
+        assertEquals(15, model.getScore());
+    }
+
+    @Test
+    public void shouldBeDivisibleByThree() throws Exception {
+        int dices[] = {
+                1,2,1,3,1,1
+        };
+        model.setScoreMode(3);
+        model.setDiceRoll(dices);
+        model.calculateScore();
+        assertEquals(9, model.getScore());
+    }
 }
