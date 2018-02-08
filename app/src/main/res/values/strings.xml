@@ -13,4 +13,9 @@
     <string name="ten">Ten</string>
     <string name="eleven">Eleven</string>
     <string name="twelve">Twelve</string>
+    <string name="endRound">End Round</string>
+    <string name="yourScore">Your score is:</string>
+    <string name="rerollsLeft">Rerolls left:</string>
+    <string name="roundsLeft">Rounds left:</string>
+    <string name="score">Score:</string>
 </resources>

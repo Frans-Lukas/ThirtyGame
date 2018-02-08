@@ -24,6 +24,7 @@ import java.util.Random;
 public class ThirtyGame extends AppCompatActivity {
     private static final int DISABLED_COLOR = Color.DKGRAY;
     private static final int ENABLED_COLOR = Color.WHITE;
+
     private static final String M_MODEL_KEY = "mModel";
     public static final int SCORE_MODE_LOW = 3;
     public static final int SCORE_MODE_FOUR = 4;
@@ -35,16 +36,18 @@ public class ThirtyGame extends AppCompatActivity {
     public static final int SCORE_MODE_TEN = 10;
     public static final int SCORE_MODE_ELEVEN = 11;
     public static final int SCORE_MODE_TWELVE = 12;
+    public static final int TOTAL_NUMBER_OF_ROUNDS = 10;
 
     private List<DiceImage> mDiceImages = new ArrayList<>();
+    private List<RadioButton> scoreChoices = new ArrayList<>();
+
     private TextView mRoundCountTextView;
     private TextView mRerollCountTextView;
     private TextView mScoreTextView;
     private Button mRollDiceBtn;
-    private Button mEndRoundButton;
-    private RadioGroup mScoringSystemRadioGroup;
     private ThirtyModel mModel;
     private Drawable[] mDieFaces = new Drawable[6];
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +74,9 @@ public class ThirtyGame extends AppCompatActivity {
         mRoundCountTextView = findViewById(R.id.roundNumberTextView);
         mRerollCountTextView = findViewById(R.id.rerollCountTextView);
 
-        mScoreTextView.setText("Score: " + mModel.getScore());
-        mRoundCountTextView.setText("Rounds left: " + (10 - mModel.getmRoundCount()));
-        mRerollCountTextView.setText("Rerolls left: " + (mModel.getRollsLeft()));
+        mScoreTextView.setText(R.string.score + mModel.getScore());
+        mRoundCountTextView.setText(R.string.roundsLeft + (TOTAL_NUMBER_OF_ROUNDS - mModel.getmRoundCount()));
+        mRerollCountTextView.setText(R.string.rerollsLeft + (mModel.getRollsLeft()));
     }
 
     /**
@@ -88,6 +91,7 @@ public class ThirtyGame extends AppCompatActivity {
             this.indexInModel = indexInModel;
         }
 
+        //Disable or enable dice buttons.
         @Override
         public void onClick(View view) {
             if(linkedDiceImage.isRollable()){
@@ -123,7 +127,7 @@ public class ThirtyGame extends AppCompatActivity {
             }
 
             //Update reroll count
-            mRerollCountTextView.setText("Rerolls left: " + mModel.getRollsLeft());
+            mRerollCountTextView.setText(R.string.rerollsLeft + mModel.getRollsLeft());
             if(!canClickAgain){
                 view.setEnabled(false);
             }
@@ -150,12 +154,16 @@ public class ThirtyGame extends AppCompatActivity {
             mModel.endRound();
             mRollDiceBtn.callOnClick();
             mRollDiceBtn.setEnabled(true);
-            mRerollCountTextView.setText("Rerolls left: " + mModel.getRollsLeft());
-            mRoundCountTextView.setText("Rounds left: " + (10 - mModel.getmRoundCount()));
-            mScoreTextView.setText("Score: " + mModel.getScore());
+
+
+            mRerollCountTextView.setText(getString(R.string.rerollsLeft) + mModel.getRollsLeft());
+            mRoundCountTextView.setText(getString(R.string.roundsLeft) + (TOTAL_NUMBER_OF_ROUNDS - mModel.getmRoundCount()));
+            mScoreTextView.setText(getString(R.string.score) + mModel.getScore());
+
+            //Game is done, return to start screen with score.
             if(mModel.isGameDone()){
                 Toast.makeText(ThirtyGame.this,
-                        "Your score is: " + mModel.getScore(),
+                        getString(R.string.yourScore) + mModel.getScore(),
                         Toast.LENGTH_LONG).show();
                 Intent intent = new Intent();
                 intent.putExtra("model", mModel);
@@ -163,10 +171,13 @@ public class ThirtyGame extends AppCompatActivity {
                 finish();
             }
 
+            ((RadioButton)scoreChoices.get(mModel.getAvailableScoreMode())).setSelected(true);
+
         }
     }
 
     private void resetDiceImages() {
+        //If dice is rollabe set it as enabled.
         for (DiceImage mDiceImage : mDiceImages) {
             if(!mDiceImage.isRollable()){
                 mDiceImage.getmDiceImage().setBackgroundColor(ENABLED_COLOR);
@@ -185,7 +196,7 @@ public class ThirtyGame extends AppCompatActivity {
         mDiceImages.add(new DiceImage((ImageButton) findViewById(R.id.diceImageButton6)));
         int index = 0;
 
-        //
+        //Change dice images to display if enabled or not.
         for (DiceImage mDiceImage : mDiceImages) {
             mDiceImage.getmDiceImage().setBackgroundColor(ENABLED_COLOR);
             mDiceImage.getmDiceImage().setOnClickListener(new DiceImageListener(mDiceImage, index));
@@ -199,8 +210,8 @@ public class ThirtyGame extends AppCompatActivity {
     }
 
     private void setUpRollDiceButton(){
-        mEndRoundButton = findViewById(R.id.calculateScoreButton);
-        mEndRoundButton.setText("End Round");
+        Button mEndRoundButton = findViewById(R.id.calculateScoreButton);
+        mEndRoundButton.setText(R.string.endRound);
         mEndRoundButton.setOnClickListener(new EndRound());
 
         mRollDiceBtn = findViewById(R.id.rollDiceButton);
@@ -213,36 +224,60 @@ public class ThirtyGame extends AppCompatActivity {
         }
     }
 
-    /**
-     * Sets up the radio group that decides the model scoreMode.
-     */
-    @SuppressLint("SetTextI18n")
-    private void setUpRadioGroup(){
-        mScoringSystemRadioGroup = findViewById(R.id.combinationRadioGroup);
-        mScoringSystemRadioGroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RadioButton rb = findViewById(((RadioGroup) view).getCheckedRadioButtonId());
-                String scoreMode = rb.getText().toString();
-                setScoreMode(scoreMode);
-            }
-        });
 
-        //Set text for all radio buttons.
-        ((RadioButton)findViewById(R.id.lowRadioButton)).setText(R.string.low);
-        ((RadioButton)findViewById(R.id.fourRadioButton)).setText(R.string.four);
-        ((RadioButton)findViewById(R.id.fiveRadioButton)).setText(R.string.five);
-        ((RadioButton)findViewById(R.id.sixRadioButton)).setText(R.string.six);
-        ((RadioButton)findViewById(R.id.sevenRadioButton)).setText(R.string.seven);
-        ((RadioButton)findViewById(R.id.eightRadioButton)).setText(R.string.eight);
-        ((RadioButton)findViewById(R.id.nineRadioButton)).setText(R.string.nine);
-        ((RadioButton)findViewById(R.id.tenRadioButton)).setText(R.string.ten);
-        ((RadioButton)findViewById(R.id.elevenRadioButton)).setText(R.string.eleven);
-        ((RadioButton)findViewById(R.id.twelveRadioButton)).setText(R.string.twelve);
+    private void setUpRadioGroup(){
+        setUpScoreChoices();
 
         //Start with low button checked.
         RadioButton lowButton = findViewById(R.id.lowRadioButton);
         lowButton.setChecked(true);
+    }
+
+    /**
+     * Class for radioButtons to change the current scoremode.
+     */
+    class radioButtonListener implements View.OnClickListener{
+
+        //Change the score mode
+        @Override
+        public void onClick(View view) {
+            RadioButton rb = (RadioButton) view;
+            String scoreMode = rb.getText().toString();
+            setScoreMode(scoreMode);
+        }
+    }
+
+    /**
+     * Add all radio buttons to score choicecs list and set their text.
+     */
+    private void setUpScoreChoices() {
+        //add to list
+        scoreChoices.add(findViewById(R.id.lowRadioButton));
+        scoreChoices.add(findViewById(R.id.fourRadioButton));
+        scoreChoices.add(findViewById(R.id.fiveRadioButton));
+        scoreChoices.add(findViewById(R.id.sixRadioButton));
+        scoreChoices.add(findViewById(R.id.sevenRadioButton));
+        scoreChoices.add(findViewById(R.id.eightRadioButton));
+        scoreChoices.add(findViewById(R.id.nineRadioButton));
+        scoreChoices.add(findViewById(R.id.tenRadioButton));
+        scoreChoices.add(findViewById(R.id.elevenRadioButton));
+        scoreChoices.add(findViewById(R.id.twelveRadioButton));
+
+        //Set text
+        scoreChoices.get(0).setText(R.string.low);
+        scoreChoices.get(1).setText(R.string.four);
+        scoreChoices.get(2).setText(R.string.five);
+        scoreChoices.get(3).setText(R.string.six);
+        scoreChoices.get(4).setText(R.string.seven);
+        scoreChoices.get(5).setText(R.string.eight);
+        scoreChoices.get(6).setText(R.string.nine);
+        scoreChoices.get(7).setText(R.string.ten);
+        scoreChoices.get(8).setText(R.string.eleven);
+        scoreChoices.get(9).setText(R.string.twelve);
+
+        for (RadioButton scoreChoice : scoreChoices) {
+            scoreChoice.setOnClickListener(new radioButtonListener());
+        }
     }
 
 

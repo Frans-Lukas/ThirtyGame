@@ -22,6 +22,8 @@ public class ThirtyModel implements Parcelable{
     private final int MAX_ROUND_COUNT = 10;
     private final int MAX_REROLL_COUNT = 3;
     private int scoreMode = 4;
+    private boolean usedScoreModeChoice[] = new boolean[10];
+
 
     private Random rand;
 
@@ -29,9 +31,6 @@ public class ThirtyModel implements Parcelable{
         mRoundCount = 0;
         mRerollCount = 0;
         rand = new Random();
-        for (boolean dice : lockedDice) {
-            dice = false;
-        }
         rollDice();
     }
 
@@ -77,6 +76,10 @@ public class ThirtyModel implements Parcelable{
         }
         //Calculate round score.
         calculateScore();
+
+        //make sure user cant use same score mode again.
+        usedScoreModeChoice[scoreMode - 3] = true;
+
         mRerollCount = 0;
         mRoundCount++;
         return true;
@@ -148,10 +151,11 @@ public class ThirtyModel implements Parcelable{
 
     public void setScoreMode(int scoreMode) throws InvalidParameterException{
         //Make sure illegal score modes can not be set.
-        if(scoreMode < 13 && scoreMode > 2){
+        if(scoreMode < 13 && scoreMode > 2 && !usedScoreModeChoice[scoreMode - 3]){
             this.scoreMode = scoreMode;
         } else{
-            throw new InvalidParameterException("scoreMode must be between 3 and 13.");
+            throw new InvalidParameterException("scoreMode must be between 3 and 13 and not have " +
+                    "been used before");
         }
     }
 
@@ -173,6 +177,19 @@ public class ThirtyModel implements Parcelable{
 
     public int getScore() {
         return score;
+    }
+
+    /**
+     * Return the first available score mode.
+     * @return the index of an available score mode, or -1 if none.
+     */
+    public int getAvailableScoreMode(){
+        for (int i = 0; i < usedScoreModeChoice.length; i++) {
+            if(usedScoreModeChoice[i] == false){
+                return i;
+            }
+        }
+        return -1;
     }
 
     public boolean isCanRollAgain() {
