@@ -3,4 +3,14 @@
     <string name="startGame">Start Game</string>
     <string name="stringError">STRINGERROR</string>
     <string name="rollDice">Roll Dice</string>
+    <string name="low">Low</string>
+    <string name="four">Four</string>
+    <string name="five">Five</string>
+    <string name="six">Six</string>
+    <string name="seven">Seven</string>
+    <string name="eight">Eight</string>
+    <string name="nine">Nine</string>
+    <string name="ten">Ten</string>
+    <string name="eleven">Eleven</string>
+    <string name="twelve">Twelve</string>
 </resources>

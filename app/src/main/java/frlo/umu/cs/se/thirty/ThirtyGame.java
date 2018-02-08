@@ -1,5 +1,6 @@
 package frlo.umu.cs.se.thirty;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -24,6 +25,16 @@ public class ThirtyGame extends AppCompatActivity {
     private static final int DISABLED_COLOR = Color.DKGRAY;
     private static final int ENABLED_COLOR = Color.WHITE;
     private static final String M_MODEL_KEY = "mModel";
+    public static final int SCORE_MODE_LOW = 3;
+    public static final int SCORE_MODE_FOUR = 4;
+    public static final int SCORE_MODE_FIVE = 5;
+    public static final int SCORE_MODE_SIX = 6;
+    public static final int SCORE_MODE_SEVEN = 7;
+    public static final int SCORE_MODE_EIGHT = 8;
+    public static final int SCORE_MODE_NINE = 9;
+    public static final int SCORE_MODE_TEN = 10;
+    public static final int SCORE_MODE_ELEVEN = 11;
+    public static final int SCORE_MODE_TWELVE = 12;
 
     private List<DiceImage> mDiceImages = new ArrayList<>();
     private TextView mRoundCountTextView;
@@ -173,6 +184,8 @@ public class ThirtyGame extends AppCompatActivity {
         mDiceImages.add(new DiceImage((ImageButton) findViewById(R.id.diceImageButton5)));
         mDiceImages.add(new DiceImage((ImageButton) findViewById(R.id.diceImageButton6)));
         int index = 0;
+
+        //
         for (DiceImage mDiceImage : mDiceImages) {
             mDiceImage.getmDiceImage().setBackgroundColor(ENABLED_COLOR);
             mDiceImage.getmDiceImage().setOnClickListener(new DiceImageListener(mDiceImage, index));
@@ -193,6 +206,8 @@ public class ThirtyGame extends AppCompatActivity {
         mRollDiceBtn = findViewById(R.id.rollDiceButton);
         mRollDiceBtn.setText(R.string.rollDice);
         mRollDiceBtn.setOnClickListener(new RollDice());
+
+        //If we can roll again, enable the dice button.
         if(!mModel.isCanRollAgain()){
             mRollDiceBtn.setEnabled(false);
         }
@@ -201,6 +216,7 @@ public class ThirtyGame extends AppCompatActivity {
     /**
      * Sets up the radio group that decides the model scoreMode.
      */
+    @SuppressLint("SetTextI18n")
     private void setUpRadioGroup(){
         mScoringSystemRadioGroup = findViewById(R.id.combinationRadioGroup);
         mScoringSystemRadioGroup.setOnClickListener(new View.OnClickListener() {
@@ -208,59 +224,64 @@ public class ThirtyGame extends AppCompatActivity {
             public void onClick(View view) {
                 RadioButton rb = findViewById(((RadioGroup) view).getCheckedRadioButtonId());
                 String scoreMode = rb.getText().toString();
-
-                switch(scoreMode){
-                    case "Low":
-                        mModel.setScoreMode(3);
-                        break;
-                    case "Four":
-                        mModel.setScoreMode(4);
-                        break;
-                    case "Five":
-                        mModel.setScoreMode(5);
-                        break;
-                    case "Six":
-                        mModel.setScoreMode(6);
-                        break;
-                    case "Seven":
-                        mModel.setScoreMode(7);
-                        break;
-                    case "Eight":
-                        mModel.setScoreMode(8);
-                        break;
-                    case "Nine":
-                        mModel.setScoreMode(9);
-                        break;
-                    case "Ten":
-                        mModel.setScoreMode(10);
-                        break;
-                    case "Eleven":
-                        mModel.setScoreMode(11);
-                        break;
-                    case "Twelve":
-                        mModel.setScoreMode(12);
-                        break;
-                    default:
-                        mModel.setScoreMode(3);
-                        break;
-                }
-
+                setScoreMode(scoreMode);
             }
         });
 
-        ((RadioButton)findViewById(R.id.lowRadioButton)).setText("Low");
-        ((RadioButton)findViewById(R.id.fourRadioButton)).setText("Four");
-        ((RadioButton)findViewById(R.id.fiveRadioButton)).setText("Five");
-        ((RadioButton)findViewById(R.id.sixRadioButton)).setText("Six");
-        ((RadioButton)findViewById(R.id.sevenRadioButton)).setText("Seven");
-        ((RadioButton)findViewById(R.id.eightRadioButton)).setText("Eight");
-        ((RadioButton)findViewById(R.id.nineRadioButton)).setText("Nine");
-        ((RadioButton)findViewById(R.id.tenRadioButton)).setText("Ten");
-        ((RadioButton)findViewById(R.id.elevenRadioButton)).setText("Eleven");
-        ((RadioButton)findViewById(R.id.twelveRadioButton)).setText("Twelve");
+        //Set text for all radio buttons.
+        ((RadioButton)findViewById(R.id.lowRadioButton)).setText(R.string.low);
+        ((RadioButton)findViewById(R.id.fourRadioButton)).setText(R.string.four);
+        ((RadioButton)findViewById(R.id.fiveRadioButton)).setText(R.string.five);
+        ((RadioButton)findViewById(R.id.sixRadioButton)).setText(R.string.six);
+        ((RadioButton)findViewById(R.id.sevenRadioButton)).setText(R.string.seven);
+        ((RadioButton)findViewById(R.id.eightRadioButton)).setText(R.string.eight);
+        ((RadioButton)findViewById(R.id.nineRadioButton)).setText(R.string.nine);
+        ((RadioButton)findViewById(R.id.tenRadioButton)).setText(R.string.ten);
+        ((RadioButton)findViewById(R.id.elevenRadioButton)).setText(R.string.eleven);
+        ((RadioButton)findViewById(R.id.twelveRadioButton)).setText(R.string.twelve);
 
+        //Start with low button checked.
         RadioButton lowButton = findViewById(R.id.lowRadioButton);
         lowButton.setChecked(true);
+    }
+
+
+    private void setScoreMode(String scoreMode){
+        switch(scoreMode){
+            case "Low":
+                mModel.setScoreMode(SCORE_MODE_LOW);
+                break;
+            case "Four":
+                mModel.setScoreMode(SCORE_MODE_FOUR);
+                break;
+            case "Five":
+                mModel.setScoreMode(SCORE_MODE_FIVE);
+                break;
+            case "Six":
+                mModel.setScoreMode(SCORE_MODE_SIX);
+                break;
+            case "Seven":
+                mModel.setScoreMode(SCORE_MODE_SEVEN);
+                break;
+            case "Eight":
+                mModel.setScoreMode(SCORE_MODE_EIGHT);
+                break;
+            case "Nine":
+                mModel.setScoreMode(SCORE_MODE_NINE);
+                break;
+            case "Ten":
+                mModel.setScoreMode(SCORE_MODE_TEN);
+                break;
+            case "Eleven":
+                mModel.setScoreMode(SCORE_MODE_ELEVEN);
+                break;
+            case "Twelve":
+                mModel.setScoreMode(SCORE_MODE_TWELVE);
+                break;
+            default:
+                mModel.setScoreMode(SCORE_MODE_LOW);
+                break;
+        }
     }
 
 
