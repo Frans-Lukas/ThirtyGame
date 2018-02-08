@@ -58,6 +58,8 @@ public class ThirtyModel implements Parcelable{
             diceRoll[i] = rand.nextInt(6) + 1;
         }
         mRerollCount++;
+
+        //Disallow player from rolling when reached max rolls.
         if(mRerollCount <= MAX_REROLL_COUNT) {
             canRollAgain =  true;
         } else{
@@ -73,6 +75,7 @@ public class ThirtyModel implements Parcelable{
         if(mRoundCount == MAX_ROUND_COUNT){
             return false;
         }
+        //Calculate round score.
         calculateScore();
         mRerollCount = 0;
         mRoundCount++;
@@ -91,13 +94,19 @@ public class ThirtyModel implements Parcelable{
                 }
             }
         } else {
+            /*Create templist for all the dice
+            * So that the smartSumSelect method can remove and add dice.
+            */
             ArrayList<Integer> tempDice = new ArrayList<>();
             for (int dice : diceRoll) {
+                //Dont add dice that are higher than the selected mode.
                 if(dice <= scoreMode) {
                     tempDice.add(dice);
                 }
             }
+            //Sort list in descending order.
             Collections.sort(tempDice, (dice1, dice2) -> dice2 - dice1);
+            //calculate score.
             smartSumSelect(tempDice, 0, scoreMode);
         }
 
