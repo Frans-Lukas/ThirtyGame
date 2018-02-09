@@ -188,6 +188,10 @@ public class ThirtyModel implements Parcelable{
         return score;
     }
 
+    public int[] getScores() {
+        return scores;
+    }
+
     /**
      * Return the first available score mode.
      * @return the index of an available score mode, or -1 if none.

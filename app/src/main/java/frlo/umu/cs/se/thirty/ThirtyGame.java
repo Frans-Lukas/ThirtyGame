@@ -148,6 +148,10 @@ public class ThirtyGame extends AppCompatActivity {
      */
     class EndRound implements View.OnClickListener{
 
+        /**
+         * Ends the round
+         * @param view the button that ends the round.
+         */
         @Override
         public void onClick(View view) {
             resetDiceImages();
@@ -161,15 +165,7 @@ public class ThirtyGame extends AppCompatActivity {
             mScoreTextView.setText(getString(R.string.score )+ mModel.getScore());
 
             //check if Game is done, if so: return to start screen with score.
-            if(mModel.isGameDone()){
-                Toast.makeText(ThirtyGame.this,
-                        getString(R.string.yourScore) + mModel.getScore(),
-                        Toast.LENGTH_LONG).show();
-                Intent intent = new Intent();
-                intent.putExtra("model", mModel);
-                setResult(Activity.RESULT_OK, intent);
-                finish();
-            }
+            endGame();
 
             //disable current scorechoice button.
             if(mModel.getAvailableScoreMode() != -1) {
@@ -179,6 +175,18 @@ public class ThirtyGame extends AppCompatActivity {
                 if(mModel.isDisabledScoreChoice(i)){
                     scoreChoices.get(i).setEnabled(false);
                 }
+            }
+        }
+
+        private void endGame() {
+            if(mModel.isGameDone()){
+                Toast.makeText(ThirtyGame.this,
+                        getString(R.string.yourScore) + mModel.getScore(),
+                        Toast.LENGTH_LONG).show();
+                Intent intent = new Intent();
+                intent.putExtra("model", mModel);
+                setResult(Activity.RESULT_OK, intent);
+                finish();
             }
         }
     }
