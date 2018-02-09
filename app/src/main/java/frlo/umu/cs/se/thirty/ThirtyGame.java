@@ -295,7 +295,6 @@ public class ThirtyGame extends AppCompatActivity {
 
 
     private void setScoreMode(String scoreMode){
-        System.out.println("Changing score mode: " + scoreMode + "Value: " + SCORE_MODE_FOUR);
         switch(scoreMode){
             case "Low":
                 mModel.setScoreMode(SCORE_MODE_LOW);

@@ -18,9 +18,9 @@ public class ThirtyModel implements Parcelable{
     private boolean canRollAgain = true;
     private int mRoundCount;
     private int mRerollCount;
-    private int score;
     private final int MAX_ROUND_COUNT = 10;
     private final int MAX_REROLL_COUNT = 3;
+    private int scores[] = new int[MAX_ROUND_COUNT];
     private int scoreMode = 4;
     private boolean usedScoreModeChoice[] = new boolean[10];
 
@@ -40,12 +40,12 @@ public class ThirtyModel implements Parcelable{
      */
     public ThirtyModel(Parcel in) {
         in.readIntArray(diceRoll);
+        in.readIntArray(scores);
         in.readBooleanArray(usedScoreModeChoice);
         in.readBooleanArray(lockedDice);
         canRollAgain = in.readInt() != 0;
         mRoundCount = in.readInt();
         mRerollCount = in.readInt();
-        score = in.readInt();
         scoreMode = in.readInt();
     }
 
@@ -81,9 +81,6 @@ public class ThirtyModel implements Parcelable{
         //make sure user cant use same score mode again.
         usedScoreModeChoice[scoreMode - 3] = true;
 
-        System.out.println("Disabling score mode: " + (scoreMode - 3));
-
-
         mRerollCount = 0;
         mRoundCount++;
         return true;
@@ -97,7 +94,7 @@ public class ThirtyModel implements Parcelable{
         if(scoreMode == 3){
             for (int dice : diceRoll) {
                 if(dice <= 3){
-                    score += dice;
+                    scores[mRoundCount] += dice;
                 }
             }
         } else {
@@ -133,7 +130,7 @@ public class ThirtyModel implements Parcelable{
     private void smartSumSelect(ArrayList<Integer> numbers, int sum, int target) {
 
         if(sum == target){
-            score += sum;
+            scores[mRoundCount] += sum;
             return;
         }
 
@@ -156,7 +153,6 @@ public class ThirtyModel implements Parcelable{
     public void setScoreMode(int scoreMode) throws InvalidParameterException{
         //Make sure illegal score modes can not be set.
         if(scoreMode < 13 && scoreMode > 2 && !usedScoreModeChoice[scoreMode - 3]){
-            System.out.println("Scoremode is changed to: " + scoreMode);
             this.scoreMode = scoreMode;
         } else{
             throw new InvalidParameterException("scoreMode must be between 3 and 13 and not have " +
@@ -180,7 +176,15 @@ public class ThirtyModel implements Parcelable{
         lockedDice[index] = false;
     }
 
+    /**
+     * Iterate all scores and add them to a score int.
+     * @return return the score
+     */
     public int getScore() {
+        int score = 0;
+        for (int i : scores) {
+            score += i;
+        }
         return score;
     }
 
@@ -197,6 +201,11 @@ public class ThirtyModel implements Parcelable{
         return -1;
     }
 
+    /**
+     * Check if the score choice is disabled or not
+     * @param index the index of the score choice.
+     * @return
+     */
     public boolean isDisabledScoreChoice(int index){
         return usedScoreModeChoice[index];
     }
@@ -253,12 +262,12 @@ public class ThirtyModel implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int i) {
         dest.writeIntArray(diceRoll);
+        dest.writeIntArray(scores);
         dest.writeBooleanArray(usedScoreModeChoice);
         dest.writeBooleanArray(lockedDice);
         dest.writeInt(canRollAgain ? 1 : 0);
         dest.writeInt(mRoundCount);
         dest.writeInt(mRerollCount);
-        dest.writeInt(score);
         dest.writeInt(scoreMode);
     }
 }
