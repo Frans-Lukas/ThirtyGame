@@ -13,9 +13,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class StartScreen extends AppCompatActivity {
+    private static final String SCORE_MODES_KEY = "scoreModes";
     private final int REQUEST_CODE_GAME = 0;
     private int score = 0;
     private int scores[];
+    private String scoreModes[];
     private final String SCORE_KEY = "score";
     private final String SCORE_ARRAY_KEY = "scoreArray";
     private TextView scoreTextView;
@@ -32,8 +34,12 @@ public class StartScreen extends AppCompatActivity {
         scoreTextView = findViewById(R.id.finalScoreTextView);
         mStartGameButton.setText(R.string.startGame);
 
-
-        restoreOnSavedInstance(savedInstanceState);
+        if(savedInstanceState != null){
+            score = savedInstanceState.getInt(SCORE_KEY);
+            scores = savedInstanceState.getIntArray(SCORE_ARRAY_KEY);
+            scoreModes = savedInstanceState.getStringArray(SCORE_MODES_KEY);
+            restoreOnSavedInstance();
+        }
 
         mStartGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,31 +50,30 @@ public class StartScreen extends AppCompatActivity {
         });
     }
 
-    private void restoreOnSavedInstance(Bundle savedInstanceState) {
-        if(savedInstanceState != null){
-            score = savedInstanceState.getInt(SCORE_KEY);
-            scores = savedInstanceState.getIntArray(SCORE_ARRAY_KEY);
+    private void restoreOnSavedInstance() {
 
-            if (scores != null) {
-                ArrayList<Integer> scoreArrayList = new ArrayList<>();
+        if (scores != null && scoreModes != null) {
+            ArrayList<String> scoreArrayList = new ArrayList<>();
 
-                for (int i : scores) {
-                    scoreArrayList.add(i);
-                }
-
-                ListView scoreList = findViewById(R.id.scoreChoicesListView);
-                ArrayAdapter<Integer> scoreListAdapter = new ArrayAdapter<Integer>(
-                        this,
-                        android.R.layout.simple_list_item_1,
-                        scoreArrayList
-                );
-
-                scoreList.setAdapter(scoreListAdapter);
-
-                scoreTextView.setText("Score: " + score);
-
+            //setup arraylist for what score mode got what score in the listview.
+            for (int i = 0; i < scores.length; i++) {
+                scoreArrayList.add("Round " + (i + 1) + " got score: " + scores[i] +
+                        " with scoring: " + scoreModes[i]);
             }
+
+            ListView scoreList = findViewById(R.id.scoreChoicesListView);
+            ArrayAdapter<String> scoreListAdapter = new ArrayAdapter<String>(
+                    this,
+                    android.R.layout.simple_list_item_1,
+                    scoreArrayList
+            );
+
+            scoreList.setAdapter(scoreListAdapter);
+
+            scoreTextView.setText(getString(R.string.totalScore) + score);
+
         }
+
     }
 
     /**
@@ -84,7 +89,8 @@ public class StartScreen extends AppCompatActivity {
                 ThirtyModel model = data.getParcelableExtra("model");
                 score = model.getScore();
                 scores = model.getScores();
-                scoreTextView.setText("Score: " + score);
+                scoreModes = model.getScoreModeChoices();
+                restoreOnSavedInstance();
             }
         }
     }
@@ -98,5 +104,6 @@ public class StartScreen extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putInt(SCORE_KEY, score);
         outState.putIntArray(SCORE_ARRAY_KEY, scores);
+        outState.putStringArray(SCORE_MODES_KEY, scoreModes);
     }
 }

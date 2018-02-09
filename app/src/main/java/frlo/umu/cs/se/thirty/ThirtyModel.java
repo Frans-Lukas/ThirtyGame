@@ -13,16 +13,34 @@ import java.util.Random;
  */
 
 public class ThirtyModel implements Parcelable{
-    private int diceRoll[] = new int[6];
-    private boolean lockedDice[] = new boolean[6];
+    public static final int SCORE_MODE_LOW = 3;
+    public static final int NUM_DICE = 6;
+    public static final int MAX_SCORE_MODE = 13;
+    public static final int MIN_SCORE_MODE = 2;
+
+    public static final int SCORE_MODE_FOUR = 4;
+    public static final int SCORE_MODE_FIVE = 5;
+    public static final int SCORE_MODE_SIX = 6;
+    public static final int SCORE_MODE_SEVEN = 7;
+    public static final int SCORE_MODE_EIGHT = 8;
+    public static final int SCORE_MODE_NINE = 9;
+    public static final int SCORE_MODE_TEN = 10;
+    public static final int SCORE_MODE_ELEVEN = 11;
+    public static final int SCORE_MODE_TWELVE = 12;
+
+    private final int MAX_ROUND_COUNT = 10;
+    private final int MAX_REROLL_COUNT = 3;
+
+    private boolean usedScoreModeChoice[] = new boolean[MAX_ROUND_COUNT];
+    private String scoreModeChoices[] = new String[MAX_ROUND_COUNT];
+    private int scores[] = new int[MAX_ROUND_COUNT];
+    private boolean lockedDice[] = new boolean[NUM_DICE];
+    private int diceRoll[] = new int[NUM_DICE];
+
     private boolean canRollAgain = true;
     private int mRoundCount;
     private int mRerollCount;
-    private final int MAX_ROUND_COUNT = 10;
-    private final int MAX_REROLL_COUNT = 3;
-    private int scores[] = new int[MAX_ROUND_COUNT];
     private int scoreMode = 4;
-    private boolean usedScoreModeChoice[] = new boolean[10];
 
 
     private Random rand;
@@ -41,6 +59,7 @@ public class ThirtyModel implements Parcelable{
     public ThirtyModel(Parcel in) {
         in.readIntArray(diceRoll);
         in.readIntArray(scores);
+        in.readStringArray(scoreModeChoices);
         in.readBooleanArray(usedScoreModeChoice);
         in.readBooleanArray(lockedDice);
         canRollAgain = in.readInt() != 0;
@@ -55,12 +74,12 @@ public class ThirtyModel implements Parcelable{
      */
     public void rollDice(){
         for (int i = 0; i < diceRoll.length; i++) {
-            diceRoll[i] = rand.nextInt(6) + 1;
+            diceRoll[i] = rand.nextInt(NUM_DICE) + 1;
         }
         mRerollCount++;
 
         //Disallow player from rolling when reached max rolls.
-        if(mRerollCount <= MAX_REROLL_COUNT) {
+        if(mRerollCount < MAX_REROLL_COUNT) {
             canRollAgain =  true;
         } else{
             canRollAgain = false;
@@ -79,7 +98,7 @@ public class ThirtyModel implements Parcelable{
         calculateScore();
 
         //make sure user cant use same score mode again.
-        usedScoreModeChoice[scoreMode - 3] = true;
+        usedScoreModeChoice[scoreMode - SCORE_MODE_LOW] = true;
 
         mRerollCount = 0;
         mRoundCount++;
@@ -91,9 +110,9 @@ public class ThirtyModel implements Parcelable{
      */
     public void calculateScore(){
         //If scoremode is three, select all dice that is three or lower.
-        if(scoreMode == 3){
+        if(scoreMode == SCORE_MODE_LOW){
             for (int dice : diceRoll) {
-                if(dice <= 3){
+                if(dice <= SCORE_MODE_LOW){
                     scores[mRoundCount] += dice;
                 }
             }
@@ -152,7 +171,7 @@ public class ThirtyModel implements Parcelable{
 
     public void setScoreMode(int scoreMode) throws InvalidParameterException{
         //Make sure illegal score modes can not be set.
-        if(scoreMode < 13 && scoreMode > 2 && !usedScoreModeChoice[scoreMode - 3]){
+        if(scoreMode < MAX_SCORE_MODE && scoreMode > MIN_SCORE_MODE && !usedScoreModeChoice[scoreMode - SCORE_MODE_LOW]){
             this.scoreMode = scoreMode;
         } else{
             throw new InvalidParameterException("scoreMode must be between 3 and 13 and not have " +
@@ -206,6 +225,49 @@ public class ThirtyModel implements Parcelable{
     }
 
     /**
+     * Sets the score mode based on the given string.
+     * @param scoreMode the string that sets the score mode.
+     */
+    public void setScoreMode(String scoreMode){
+        scoreModeChoices[mRoundCount] = scoreMode;
+        switch(scoreMode){
+            case "Low":
+                setScoreMode(SCORE_MODE_LOW);
+                break;
+            case "Four":
+                setScoreMode(SCORE_MODE_FOUR);
+                break;
+            case "Five":
+                setScoreMode(SCORE_MODE_FIVE);
+                break;
+            case "Six":
+                setScoreMode(SCORE_MODE_SIX);
+                break;
+            case "Seven":
+                setScoreMode(SCORE_MODE_SEVEN);
+                break;
+            case "Eight":
+                setScoreMode(SCORE_MODE_EIGHT);
+                break;
+            case "Nine":
+                setScoreMode(SCORE_MODE_NINE);
+                break;
+            case "Ten":
+                setScoreMode(SCORE_MODE_TEN);
+                break;
+            case "Eleven":
+                setScoreMode(SCORE_MODE_ELEVEN);
+                break;
+            case "Twelve":
+                setScoreMode(SCORE_MODE_TWELVE);
+                break;
+            default:
+                setScoreMode(SCORE_MODE_LOW);
+                break;
+        }
+    }
+
+    /**
      * Check if the score choice is disabled or not
      * @param index the index of the score choice.
      * @return
@@ -219,11 +281,15 @@ public class ThirtyModel implements Parcelable{
     }
 
     public int getRollsLeft() {
-        return MAX_REROLL_COUNT - mRerollCount + 1;
+        return MAX_REROLL_COUNT - mRerollCount;
     }
 
-    public int getmRoundCount() {
+    public int getRoundCount() {
         return mRoundCount;
+    }
+
+    public String[] getScoreModeChoices() {
+        return scoreModeChoices;
     }
 
     public int[] getDiceRoll() {
@@ -267,6 +333,7 @@ public class ThirtyModel implements Parcelable{
     public void writeToParcel(Parcel dest, int i) {
         dest.writeIntArray(diceRoll);
         dest.writeIntArray(scores);
+        dest.writeStringArray(scoreModeChoices);
         dest.writeBooleanArray(usedScoreModeChoice);
         dest.writeBooleanArray(lockedDice);
         dest.writeInt(canRollAgain ? 1 : 0);

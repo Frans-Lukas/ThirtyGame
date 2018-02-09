@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/startScreenLayout"
     android:layout_width="match_parent"
@@ -28,17 +27,12 @@
         android:text="test"
         android:textSize="40dp"/>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/startGameButton"
-        android:id="@+id/scoreScrollView"
-        android:layout_below="@id/finalScoreTextView">
-
         <ListView
             android:id="@+id/scoreChoicesListView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </ScrollView>
+            android:layout_height="match_parent"
+            android:layout_below="@id/finalScoreTextView"
+            android:layout_above="@id/startGameButton"
+            />
 
 </RelativeLayout>

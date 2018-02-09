@@ -1,42 +1,28 @@
 package frlo.umu.cs.se.thirty;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.ColorSpace;
 import android.graphics.drawable.Drawable;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class ThirtyGame extends AppCompatActivity {
     private static final int DISABLED_COLOR = Color.DKGRAY;
     private static final int ENABLED_COLOR = Color.WHITE;
 
     private static final String M_MODEL_KEY = "mModel";
-    public static final int SCORE_MODE_LOW = 3;
-    public static final int SCORE_MODE_FOUR = 4;
-    public static final int SCORE_MODE_FIVE = 5;
-    public static final int SCORE_MODE_SIX = 6;
-    public static final int SCORE_MODE_SEVEN = 7;
-    public static final int SCORE_MODE_EIGHT = 8;
-    public static final int SCORE_MODE_NINE = 9;
-    public static final int SCORE_MODE_TEN = 10;
-    public static final int SCORE_MODE_ELEVEN = 11;
-    public static final int SCORE_MODE_TWELVE = 12;
     public static final int TOTAL_NUMBER_OF_ROUNDS = 10;
+    public static final int ALL_SCORE_MODES_ARE_DONE = -1;
 
     private List<DiceImage> mDiceImages = new ArrayList<>();
     private List<RadioButton> scoreChoices = new ArrayList<>();
@@ -75,7 +61,7 @@ public class ThirtyGame extends AppCompatActivity {
         mRerollCountTextView = findViewById(R.id.rerollCountTextView);
 
         mScoreTextView.setText(getString(R.string.score) + mModel.getScore());
-        mRoundCountTextView.setText(getString(R.string.roundsLeft) + (TOTAL_NUMBER_OF_ROUNDS - mModel.getmRoundCount()));
+        mRoundCountTextView.setText(getString(R.string.roundsLeft) + (TOTAL_NUMBER_OF_ROUNDS - mModel.getRoundCount()));
         mRerollCountTextView.setText(getString(R.string.rerollsLeft) + (mModel.getRollsLeft()));
     }
 
@@ -161,14 +147,16 @@ public class ThirtyGame extends AppCompatActivity {
 
             //change score, reroll and round left text.
             mRerollCountTextView.setText(getString(R.string.rerollsLeft) + mModel.getRollsLeft());
-            mRoundCountTextView.setText(getString(R.string.roundsLeft )+ (TOTAL_NUMBER_OF_ROUNDS - mModel.getmRoundCount()));
+            mRoundCountTextView.setText(getString(R.string.roundsLeft )+ (TOTAL_NUMBER_OF_ROUNDS - mModel.getRoundCount()));
             mScoreTextView.setText(getString(R.string.score )+ mModel.getScore());
 
             //check if Game is done, if so: return to start screen with score.
-            endGame();
+            if(mModel.isGameDone()) {
+                endGame();
+            }
 
             //disable current scorechoice button.
-            if(mModel.getAvailableScoreMode() != -1) {
+            if(mModel.getAvailableScoreMode() != ALL_SCORE_MODES_ARE_DONE) {
                  scoreChoices.get(mModel.getAvailableScoreMode()).performClick();
             }
             for (int i = 0; i < scoreChoices.size(); i++) {
@@ -178,17 +166,20 @@ public class ThirtyGame extends AppCompatActivity {
             }
         }
 
-        private void endGame() {
-            if(mModel.isGameDone()){
-                Toast.makeText(ThirtyGame.this,
-                        getString(R.string.yourScore) + mModel.getScore(),
-                        Toast.LENGTH_LONG).show();
-                Intent intent = new Intent();
-                intent.putExtra("model", mModel);
-                setResult(Activity.RESULT_OK, intent);
-                finish();
-            }
-        }
+
+    }
+
+    /**
+     * End the game and return to previous screen.
+     */
+    private void endGame() {
+        Toast.makeText(ThirtyGame.this,
+                getString(R.string.yourScore) + mModel.getScore(),
+                Toast.LENGTH_LONG).show();
+        Intent intent = new Intent();
+        intent.putExtra("model", mModel);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 
     private void resetDiceImages() {
@@ -258,7 +249,7 @@ public class ThirtyGame extends AppCompatActivity {
         public void onClick(View view) {
             RadioButton rb = (RadioButton) view;
             String scoreMode = rb.getText().toString();
-            setScoreMode(scoreMode);
+            mModel.setScoreMode(scoreMode);
         }
     }
 
@@ -290,56 +281,18 @@ public class ThirtyGame extends AppCompatActivity {
         scoreChoices.get(8).setText(getString(R.string.eleven));
         scoreChoices.get(9).setText(getString(R.string.twelve));
 
+        //Set click listener for every score choice.
         for (RadioButton scoreChoice : scoreChoices) {
             scoreChoice.setOnClickListener(new radioButtonListener());
         }
 
+        //Set radio buttons to enabled if they are usable in game.
         for (int i = 0; i < scoreChoices.size(); i++) {
             if(mModel.isDisabledScoreChoice(i)){
                 scoreChoices.get(i).setEnabled(false);
             }
         }
     }
-
-
-    private void setScoreMode(String scoreMode){
-        switch(scoreMode){
-            case "Low":
-                mModel.setScoreMode(SCORE_MODE_LOW);
-                break;
-            case "Four":
-                mModel.setScoreMode(SCORE_MODE_FOUR);
-                break;
-            case "Five":
-                mModel.setScoreMode(SCORE_MODE_FIVE);
-                break;
-            case "Six":
-                mModel.setScoreMode(SCORE_MODE_SIX);
-                break;
-            case "Seven":
-                mModel.setScoreMode(SCORE_MODE_SEVEN);
-                break;
-            case "Eight":
-                mModel.setScoreMode(SCORE_MODE_EIGHT);
-                break;
-            case "Nine":
-                mModel.setScoreMode(SCORE_MODE_NINE);
-                break;
-            case "Ten":
-                mModel.setScoreMode(SCORE_MODE_TEN);
-                break;
-            case "Eleven":
-                mModel.setScoreMode(SCORE_MODE_ELEVEN);
-                break;
-            case "Twelve":
-                mModel.setScoreMode(SCORE_MODE_TWELVE);
-                break;
-            default:
-                mModel.setScoreMode(SCORE_MODE_LOW);
-                break;
-        }
-    }
-
 
     /**
      * On reset, remember parcable with all the model data.

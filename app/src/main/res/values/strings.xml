@@ -18,4 +18,5 @@
     <string name="rerollsLeft">Rerolls left:</string>
     <string name="roundsLeft">Rounds left:</string>
     <string name="score">Score:</string>
+    <string name="totalScore">Total score:</string>
 </resources>
