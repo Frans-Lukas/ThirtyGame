@@ -341,4 +341,13 @@ public class ThirtyModel implements Parcelable{
         dest.writeInt(mRerollCount);
         dest.writeInt(scoreMode);
     }
+
+    /**
+     * Unlocks all the dice.
+     */
+    public void deselectAllDice() {
+        for (int i = 0; i < lockedDice.length; i++) {
+            lockedDice[i] = false;
+        }
+    }
 }

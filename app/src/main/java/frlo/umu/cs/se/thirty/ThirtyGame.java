@@ -80,13 +80,17 @@ public class ThirtyGame extends AppCompatActivity {
         //Disable or enable dice buttons.
         @Override
         public void onClick(View view) {
+            //If image is rollabel, lock it.
             if(linkedDiceImage.isRollable()){
                 linkedDiceImage.getmDiceImage().setBackgroundColor(DISABLED_COLOR);
                 mModel.lockDice(indexInModel);
-            } else{
+            }
+            //otherwise unlock it.
+            else{
                 linkedDiceImage.getmDiceImage().setBackgroundColor(ENABLED_COLOR);
                 mModel.unlockDice(indexInModel);
             }
+            //change to opposite of current rollable.
             linkedDiceImage.setRollable(!linkedDiceImage.isRollable());
         }
     }
@@ -154,6 +158,9 @@ public class ThirtyGame extends AppCompatActivity {
             if(mModel.isGameDone()) {
                 endGame();
             }
+
+            //Unlock all dice.
+            mModel.deselectAllDice();
 
             //disable current scorechoice button.
             if(mModel.getAvailableScoreMode() != ALL_SCORE_MODES_ARE_DONE) {
@@ -258,28 +265,10 @@ public class ThirtyGame extends AppCompatActivity {
      */
     private void setUpScoreChoices() {
         //add to list
-        scoreChoices.add(findViewById(R.id.lowRadioButton));
-        scoreChoices.add(findViewById(R.id.fourRadioButton));
-        scoreChoices.add(findViewById(R.id.fiveRadioButton));
-        scoreChoices.add(findViewById(R.id.sixRadioButton));
-        scoreChoices.add(findViewById(R.id.sevenRadioButton));
-        scoreChoices.add(findViewById(R.id.eightRadioButton));
-        scoreChoices.add(findViewById(R.id.nineRadioButton));
-        scoreChoices.add(findViewById(R.id.tenRadioButton));
-        scoreChoices.add(findViewById(R.id.elevenRadioButton));
-        scoreChoices.add(findViewById(R.id.twelveRadioButton));
+        addScoreChoicesToList();
 
         //Set text
-        scoreChoices.get(0).setText(getString(R.string.low));
-        scoreChoices.get(1).setText(getString(R.string.four));
-        scoreChoices.get(2).setText(getString(R.string.five));
-        scoreChoices.get(3).setText(getString(R.string.six));
-        scoreChoices.get(4).setText(getString(R.string.seven));
-        scoreChoices.get(5).setText(getString(R.string.eight));
-        scoreChoices.get(6).setText(getString(R.string.nine));
-        scoreChoices.get(7).setText(getString(R.string.ten));
-        scoreChoices.get(8).setText(getString(R.string.eleven));
-        scoreChoices.get(9).setText(getString(R.string.twelve));
+        setupScoreChoiceText();
 
         //Set click listener for every score choice.
         for (RadioButton scoreChoice : scoreChoices) {
@@ -292,6 +281,32 @@ public class ThirtyGame extends AppCompatActivity {
                 scoreChoices.get(i).setEnabled(false);
             }
         }
+    }
+
+    private void addScoreChoicesToList() {
+        scoreChoices.add(findViewById(R.id.lowRadioButton));
+        scoreChoices.add(findViewById(R.id.fourRadioButton));
+        scoreChoices.add(findViewById(R.id.fiveRadioButton));
+        scoreChoices.add(findViewById(R.id.sixRadioButton));
+        scoreChoices.add(findViewById(R.id.sevenRadioButton));
+        scoreChoices.add(findViewById(R.id.eightRadioButton));
+        scoreChoices.add(findViewById(R.id.nineRadioButton));
+        scoreChoices.add(findViewById(R.id.tenRadioButton));
+        scoreChoices.add(findViewById(R.id.elevenRadioButton));
+        scoreChoices.add(findViewById(R.id.twelveRadioButton));
+    }
+
+    private void setupScoreChoiceText() {
+        scoreChoices.get(0).setText(getString(R.string.low));
+        scoreChoices.get(1).setText(getString(R.string.four));
+        scoreChoices.get(2).setText(getString(R.string.five));
+        scoreChoices.get(3).setText(getString(R.string.six));
+        scoreChoices.get(4).setText(getString(R.string.seven));
+        scoreChoices.get(5).setText(getString(R.string.eight));
+        scoreChoices.get(6).setText(getString(R.string.nine));
+        scoreChoices.get(7).setText(getString(R.string.ten));
+        scoreChoices.get(8).setText(getString(R.string.eleven));
+        scoreChoices.get(9).setText(getString(R.string.twelve));
     }
 
     /**
