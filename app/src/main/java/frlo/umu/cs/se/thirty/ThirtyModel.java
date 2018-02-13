@@ -66,6 +66,7 @@ public class ThirtyModel implements Parcelable{
         mRoundCount = in.readInt();
         mRerollCount = in.readInt();
         scoreMode = in.readInt();
+        rand = new Random();
     }
 
 
